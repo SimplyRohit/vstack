@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { SessionProvider } from "next-auth/react";
-
+import { cn } from "@/lib/utils";
+import MainSidebar from "@/components/sidebar/mainSidebar";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -23,13 +24,21 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const MOBILE_BREAKPOINT = 768;
+
   return (
     <SessionProvider>
       <html lang="en">
         <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+          className={`${geistSans.variable} ${geistMono.variable} antialiased  `}
         >
-          {children}
+          <div className="md:block hidden">
+            <MainSidebar />
+            {children}
+          </div>
+          <div className="md:hidden">
+            <h1>Not availaaiug</h1>
+          </div>
         </body>
       </html>
     </SessionProvider>

@@ -1,17 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/service/auth/auth";
-import { db } from "@/service/database";
-import * as schema from "@/service/database/schema";
-import { eq } from "drizzle-orm";
 
 export default auth(async function middleware(req) {
-  // const session = await auth();
-
-  // const user = await db
-  //   .select()
-  //   .from(schema.Users)
-  //   .where(eq(schema.Users.userid as string, session?.user?.id as string));
-  // console.log("user", user);
   const { nextUrl } = req;
   const isAuthenticated = !!req.auth;
   console.log("isAuthenticated", isAuthenticated);

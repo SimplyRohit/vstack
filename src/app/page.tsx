@@ -1,10 +1,19 @@
 "use client";
+
+import { findUser } from "@/actions/checkUser";
 import { useEffect } from "react";
+
 export default function Home() {
+  // useEffect(() => {
+  //   const Handle = async () => {
+  //     const data = await findUser();
+  //     console.log("data", data);
+  //   };
+  //   Handle();
+  // }, []);
   return (
-    <div className="flex h-screen justify-center items-center">
-      <h1>hello</h1>
-      <button>sign out</button>
+    <div>
+      <h1>Heelo</h1>
     </div>
   );
 }
