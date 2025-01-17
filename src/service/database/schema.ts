@@ -1,4 +1,11 @@
-import { pgTable, text, serial, pgEnum, integer } from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  text,
+  serial,
+  pgEnum,
+  integer,
+  jsonb,
+} from "drizzle-orm/pg-core";
 export const userRole = pgEnum("user_role", ["user", "admin"]);
 export const Users = pgTable("users", {
   id: serial("id").primaryKey(),
@@ -14,6 +21,5 @@ export const Chats = pgTable("chats", {
   id: serial("id").primaryKey(),
   userid: text("user_id").references(() => Users.userid),
   chatid: text("chat_id").notNull().unique(),
-  message: text("message").notNull(),
-  date: text("date").notNull(),
+  messages: jsonb("messages"),
 });

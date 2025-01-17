@@ -17,12 +17,26 @@ import {
 } from "@/components/ui/alert-dialog";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { MakeChat } from "@/actions/checkChat";
 
 export default function Main({ UserSession }: { UserSession: any }) {
   const [text, setText] = React.useState<string>("");
   const router = useRouter();
-  const handleSubmit = (text: string) => {
-    router.push(`/chat/1234`);
+  const handleSubmit = async () => {
+    const chatid = Math.random().toString(36).slice(2);
+    const data = await MakeChat({
+      chatid,
+      chatmessage: text,
+      role: "user",
+    });
+    console.log(data);
+    if (data.status === 400 || data.status === 401) {
+      alert("some error");
+    }
+    if (data.status === 200) {
+      // router.push(`/chat/${chatid}`);
+      alert("success");
+    }
   };
 
   return (
@@ -55,7 +69,7 @@ export default function Main({ UserSession }: { UserSession: any }) {
           <div>
             <AlertDialog>
               <AlertDialogTrigger
-                onClick={() => handleSubmit(text)}
+                onClick={() => handleSubmit()}
                 className={cn(
                   text.length === 0 && "hidden",
                   " rounded-[5px] mr-2 mb-1 p-1 text-white opacity-80 bg-blue-400 hover:bg-blue-500"

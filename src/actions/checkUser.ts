@@ -3,12 +3,12 @@ import { eq } from "drizzle-orm";
 import { db } from "@/service/database/index";
 import { Users } from "@/service/database/schema";
 import { auth } from "@/service/auth/auth";
-export async function findUser() {
+export async function checkUser() {
   const currentUser = await auth();
   const user = currentUser?.user;
   try {
     if (!user) {
-      return "user and account not found";
+      return { status: 400 };
     }
 
     const exitinguser = await db
@@ -24,12 +24,12 @@ export async function findUser() {
         image: user.image,
       });
       console.log("newUser");
-      return newUser;
+      return { newUser, status: 201 };
     }
     console.log("exitinguser");
-    return exitinguser;
+    return { exitinguser, status: 200 };
   } catch (error) {
     console.log("error");
-    return error;
+    return { error, status: 401 };
   }
 }

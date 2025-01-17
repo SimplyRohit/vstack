@@ -1,6 +1,6 @@
 {
-  "id": "06e01231-31dc-4b4a-af75-11dfb9c17d62",
-  "prevId": "2054c48d-e211-49ff-83de-865975e2a9f2",
+  "id": "e610fb07-97a1-4d18-b80d-a6ad60f786f4",
+  "prevId": "c4e0e32a-96c2-49e6-94d9-8220b7f10d65",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -26,17 +26,11 @@
           "primaryKey": false,
           "notNull": true
         },
-        "message": {
-          "name": "message",
-          "type": "text",
+        "messages": {
+          "name": "messages",
+          "type": "jsonb",
           "primaryKey": false,
-          "notNull": true
-        },
-        "date": {
-          "name": "date",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
+          "notNull": false
         }
       },
       "indexes": {},
