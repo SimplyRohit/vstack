@@ -9,3 +9,11 @@ export const Users = pgTable("users", {
   image: text("image"),
   tokens: integer("tokens").notNull().default(1000),
 });
+
+export const Chats = pgTable("chats", {
+  id: serial("id").primaryKey(),
+  userid: text("user_id").references(() => Users.userid),
+  chatid: text("chat_id").notNull().unique(),
+  message: text("message").notNull(),
+  date: text("date").notNull(),
+});

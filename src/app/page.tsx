@@ -1,19 +1,27 @@
 "use client";
 
-import { findUser } from "@/actions/checkUser";
-import { useEffect } from "react";
+import BottomBar from "@/components/main/bottom";
+import Main from "@/components/main/main";
+import Navbar from "@/components/main/navbar";
+import { useSession } from "next-auth/react";
+import React from "react";
 
 export default function Home() {
-  // useEffect(() => {
-  //   const Handle = async () => {
-  //     const data = await findUser();
-  //     console.log("data", data);
-  //   };
-  //   Handle();
-  // }, []);
+  const [UserSession, SetUserSession] = React.useState<any>();
+  const session = useSession();
+  React.useEffect(() => {
+    const Handle = async () => {
+      await SetUserSession(session.data?.user);
+      console.log(UserSession);
+    };
+    Handle();
+  });
+
   return (
-    <div>
-      <h1>Heelo</h1>
-    </div>
+    <>
+      <Navbar UserSession={UserSession} />
+      <Main UserSession={UserSession} />
+      <BottomBar />
+    </>
   );
 }

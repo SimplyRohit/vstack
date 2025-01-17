@@ -1,12 +1,8 @@
 "use client";
-import { useParams } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export default function Workspace() {
-  const params = useParams();
-  const WorkSpaceID = params.id;
-  return (
-    <div className="flex h-screen justify-center items-center">
-      <h1>workspace {WorkSpaceID}</h1>
-    </div>
-  );
+  return <div className="flex h-screen justify-center items-center"></div>;
 }

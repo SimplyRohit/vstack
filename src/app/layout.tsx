@@ -1,18 +1,10 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { GeistSans } from "geist/font/sans";
+import { GeistMono } from "geist/font/mono";
 import "./globals.css";
 import { SessionProvider } from "next-auth/react";
 import { cn } from "@/lib/utils";
 import MainSidebar from "@/components/sidebar/mainSidebar";
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -24,20 +16,13 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const MOBILE_BREAKPOINT = 768;
-
   return (
     <SessionProvider>
       <html lang="en">
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased  `}
-        >
-          <div className="md:block hidden">
+        <body className={cn(`${GeistMono.className} antialiased    `)}>
+          <div className="flex flex-col min-h-screen">
             <MainSidebar />
             {children}
-          </div>
-          <div className="md:hidden">
-            <h1>Not availaaiug</h1>
           </div>
         </body>
       </html>

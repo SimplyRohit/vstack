@@ -10,7 +10,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       return true;
     },
 
-    async jwt({ token, user, account, profile }) {
+    async jwt({ token, user, account }) {
       if (user) {
         token.id = `user-${account?.providerAccountId}`;
       }

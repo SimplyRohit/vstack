@@ -1,77 +1,8 @@
-import {
-  SquareTerminal,
-  Bot,
-  BookOpen,
-  Settings2,
-  Bell,
-  SquareActivity,
-  Brain,
-} from "lucide-react";
-export const MainContentMenu = [
-  {
-    title: "Dashboard",
-    url: "#",
-    icon: SquareTerminal,
-    pathname: "home",
-  },
-  {
-    title: "My Library",
-    url: "#",
-    icon: Bot,
-    pathname: "my-library",
-  },
-  {
-    title: "Shared Library",
-    url: "#",
-    icon: BookOpen,
-    pathname: "shared-library",
-  },
-  {
-    title: "Notifications",
-    url: "#",
-    icon: Bell,
-    pathname: "notifications",
-  },
-  {
-    title: "Settings",
-    url: "#",
-    icon: Settings2,
-    pathname: "setting",
-  },
-];
-
-export const MainContentPro = [
-  {
-    title: "Discord",
-    url: "#",
-    icon: SquareActivity,
-    pathname: "discord",
-  },
-  {
-    title: "pro Ai",
-    url: "#",
-    icon: Brain,
-    pathname: "ai",
-  },
-];
-
-export const AdminContentMenu = [
-  {
-    title: "Admin Dashboard",
-    url: "#",
-    icon: SquareTerminal,
-    pathname: "admin-dashboard",
-  },
-  {
-    title: "Users",
-    url: "#",
-    icon: Bot,
-    pathname: "users",
-  },
-  {
-    title: "Settings",
-    url: "#",
-    icon: Settings2,
-    pathname: "admin-setting",
-  },
+export const Suggestions = [
+  "What's your favorite color?",
+  "What's your favorite food?",
+  "What's your favorite movie?",
+  "What's your favorite book?",
+  "What's your favorite sport?",
+  "What's your favorite game?",
 ];
