@@ -1,9 +1,9 @@
 "use server";
 import { eq } from "drizzle-orm";
-import { db } from "@/service/database/index";
-import { Users } from "@/service/database/schema";
-import { auth } from "@/service/auth/auth";
-export async function checkUser() {
+import { db } from "@/service/Database/index";
+import { Users } from "@/service/Database/schema";
+import { auth } from "@/service/Auth/auth";
+export async function GetUser() {
   const currentUser = await auth();
   const user = currentUser?.user;
   try {
@@ -23,13 +23,10 @@ export async function checkUser() {
         name: user.name,
         image: user.image,
       });
-      console.log("newUser");
-      return { newUser, status: 201 };
+      return { status: 201 };
     }
-    console.log("exitinguser");
     return { exitinguser, status: 200 };
   } catch (error) {
-    console.log("error");
     return { error, status: 401 };
   }
 }

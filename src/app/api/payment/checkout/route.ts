@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { razorpay } from "@/service/payment/razorpay";
+import { razorpay } from "@/service/Payment/razorpay";
 
 export async function POST() {
   try {

@@ -1,7 +1,0 @@
-export default function EditorView() {
-  return (
-    <div>
-      <h1>hello</h1>
-    </div>
-  );
-}

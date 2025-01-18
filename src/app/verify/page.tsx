@@ -1,12 +1,11 @@
 "use client";
-import { checkUser } from "@/actions/checkUser";
+import { GetUser } from "@/actions/GetUser";
 import { useEffect } from "react";
 import { signIn, signOut } from "next-auth/react";
 export default function Verify() {
   useEffect(() => {
     const Handle = async () => {
-      const data = await checkUser();
-      console.log(data);
+      const data = await GetUser();
       if (data.status === 400 || data.status === 401) {
         signOut();
         signIn();

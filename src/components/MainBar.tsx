@@ -2,8 +2,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Link2, WandSparkles, MoveRight } from "lucide-react";
 import React from "react";
 import { cn } from "@/lib/utils";
-import { Suggestions } from "@/lib/constant";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Suggestions } from "@/lib/Constant";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,19 +17,20 @@ import {
 } from "@/components/ui/alert-dialog";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { MakeChat } from "@/actions/checkChat";
+import { MakeChat } from "@/actions/MakeChat";
 
-export default function Main({ UserSession }: { UserSession: any }) {
+export default function MainBar({ UserSession }: { UserSession: any }) {
   const [text, setText] = React.useState<string>("");
   const router = useRouter();
   const handleSubmit = async () => {
     const chatid = Math.random().toString(36).slice(2);
     const data = await MakeChat({
       chatid,
-      chatmessage: text,
-      role: "user",
+      message: {
+        role: "user",
+        content: text,
+      },
     });
-    console.log(data);
     if (data.status === 400 || data.status === 401) {
       alert("some error");
     }

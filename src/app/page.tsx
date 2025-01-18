@@ -1,8 +1,8 @@
 "use client";
 
-import BottomBar from "@/components/main/bottom";
-import Main from "@/components/main/main";
-import Navbar from "@/components/main/navbar";
+import BottomBar from "@/components/BottomBar";
+import MainBar from "@/components/MainBar";
+import Navbar from "@/components/NavBar";
 import { useSession } from "next-auth/react";
 import React from "react";
 
@@ -12,7 +12,6 @@ export default function Home() {
   React.useEffect(() => {
     const Handle = async () => {
       await SetUserSession(session.data?.user);
-      console.log(UserSession);
     };
     Handle();
   });
@@ -20,7 +19,7 @@ export default function Home() {
   return (
     <>
       <Navbar UserSession={UserSession} />
-      <Main UserSession={UserSession} />
+      <MainBar UserSession={UserSession} />
       <BottomBar />
     </>
   );

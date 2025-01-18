@@ -1,19 +1,76 @@
 "use client";
-import { CheckChat } from "@/actions/checkChat";
+import { GetAiMessage } from "@/actions/GetAiMessage";
+import ChatView from "@/components/ChatView";
+import EditorView from "@/components/EditorView";
+import { Message } from "@/lib/Types";
 import { useParams } from "next/navigation";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
+import { useSession } from "next-auth/react";
+import Navbar from "@/components/NavBar";
+import Prompt from "@/service/Ai/Prompt";
+
+const Chat = {
+  chatid: "1234",
+  messages: [
+    {
+      role: "user",
+      content: "make a todo app",
+    },
+  ],
+};
 
 export default function Workspace() {
-  const params = useParams();
-
-  useEffect(() => {
+  const [UserSession, SetUserSession] = React.useState<any>();
+  const session = useSession();
+  React.useEffect(() => {
     const Handle = async () => {
-      const chatid = params.id;
-      console.log(chatid);
-      const data = await CheckChat(chatid as string);
-      console.log(data);
+      await SetUserSession(session.data?.user);
     };
     Handle();
+  });
+  const [text, setText] = React.useState<string>("");
+  const params = useParams();
+
+  const [Message, setMessage] = React.useState<Message[]>([]);
+  useEffect(() => {
+    const HandleMessage = async () => {
+      await setMessage(Chat.messages);
+      if (Chat.messages.length === 1) {
+        const data = await GetAiMessage(
+          Chat.messages[0].content + Prompt.CHAT_PROMPT
+        );
+        setMessage((prev) => [
+          ...prev,
+          { role: "assistant", content: data.content as string },
+        ]);
+      }
+    };
+
+    HandleMessage();
   }, []);
-  return <div className="flex h-screen justify-center items-center"></div>;
+
+  const HandleUpdate = async () => {
+    setMessage((prev) => [...prev, { role: "user", content: text }]);
+    const data = await GetAiMessage(text);
+    setMessage((prev) => [
+      ...prev,
+      { role: "assistant", content: data.content as string },
+    ]);
+  };
+
+  return (
+    <div className="flex w-full h-screen justify-center items-center flex-col">
+      <Navbar UserSession={UserSession} />
+      <div className="flex w-full h-full justify-center items-center flex-row">
+        <ChatView
+          Message={Message}
+          HandleUpdate={HandleUpdate}
+          text={text}
+          setText={setText}
+        />
+        {/* codeView */}
+        <EditorView Message={Message} />
+      </div>
+    </div>
+  );
 }

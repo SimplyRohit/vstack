@@ -1,6 +1,6 @@
 {
-  "id": "e610fb07-97a1-4d18-b80d-a6ad60f786f4",
-  "prevId": "c4e0e32a-96c2-49e6-94d9-8220b7f10d65",
+  "id": "5dcc924c-5ac4-491c-8f6f-6a64adf48656",
+  "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -30,7 +30,8 @@
           "name": "messages",
           "type": "jsonb",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "default": "'[]'::jsonb"
         }
       },
       "indexes": {},

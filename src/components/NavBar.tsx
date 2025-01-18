@@ -1,9 +1,9 @@
 import { User } from "next-auth";
-import { Button } from "../ui/button";
+import { Button } from "./ui/button";
 import { signIn } from "next-auth/react";
 import { cn } from "@/lib/utils";
 
-export default function Navbar({
+export default function NavBar({
   UserSession,
 }: {
   UserSession: User | undefined;

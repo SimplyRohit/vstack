@@ -3,7 +3,7 @@ CREATE TABLE "chats" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"user_id" text,
 	"chat_id" text NOT NULL,
-	"messages" jsonb DEFAULT '[]' NOT NULL,
+	"messages" jsonb DEFAULT '[]'::jsonb,
 	CONSTRAINT "chats_chat_id_unique" UNIQUE("chat_id")
 );
 --> statement-breakpoint

@@ -4,7 +4,7 @@ import { GeistMono } from "geist/font/mono";
 import "./globals.css";
 import { SessionProvider } from "next-auth/react";
 import { cn } from "@/lib/utils";
-import MainSidebar from "@/components/sidebar/mainSidebar";
+import MainSidebar from "@/components/MainSidebar";
 
 export const metadata: Metadata = {
   title: "Create Next App",
