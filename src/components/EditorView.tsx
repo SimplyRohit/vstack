@@ -8,32 +8,30 @@ import {
   SandpackFileExplorer,
   SandpackPreview,
 } from "@codesandbox/sandpack-react";
-import Lookup from "@/service/Ai/Lookup";
 import { Message } from "@/lib/Types";
-import { GetAiCode } from "@/actions/GetAiCode";
-import Prompt from "@/service/Ai/Prompt";
+import { GetAiCode } from "@/actions/GetAi";
+import { Code_Gen_Prompt, Default_File, Dependency } from "@/lib/Constant";
 export default function EditorView({ Message }: { Message: Message[] }) {
   const [Active, setActive] = React.useState<string>("code");
-  const [files, setFiles] = React.useState<any>({ ...Lookup.DEFAULT_FILE });
+  const [files, setFiles] = React.useState<any>({ ...Default_File });
 
   useEffect(() => {
-    const HandleCode = async () => {
-      if (Message?.length > 0) {
-        const role = Message[Message.length - 1].role;
-        if (role === "user") {
-          const data = await GetAiCode(
-            Message[Message.length - 1].content + Prompt.CODE_GEN_PROMPT
-          );
-
-          const merge = {
-            ...Lookup.DEFAULT_FILE,
-            ...data.content.files,
-          };
-          setFiles(merge);
-        }
-      }
-    };
-    HandleCode();
+    // const HandleCode = async () => {
+    //   if (Message?.length > 0) {
+    //     const role = Message[Message.length - 1].role;
+    //     if (role === "user") {
+    //       const data = await GetAiCode(
+    // Message[Message.length - 1].content + Code_Gen_Prompt
+    //       );
+    //       const merge = {
+    //         ...Default_File,
+    //         ...data.content.files,
+    //       };
+    //       setFiles(merge);
+    //     }
+    //   }
+    // };
+    // HandleCode();
   }, [Message]);
 
   return (
@@ -51,7 +49,7 @@ export default function EditorView({ Message }: { Message: Message[] }) {
           files={files}
           customSetup={{
             dependencies: {
-              ...Lookup.DEPENDANCY,
+              ...Dependency,
             },
           }}
           theme={"dark"}

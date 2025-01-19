@@ -2,11 +2,14 @@
 
 import BottomBar from "@/components/BottomBar";
 import MainBar from "@/components/MainBar";
-import Navbar from "@/components/NavBar";
+import Navbar from "@/components/MainNavBar";
+import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
+import { IsLoginContext } from "@/lib/Context";
 import { useSession } from "next-auth/react";
 import React from "react";
 
 export default function Home() {
+  const { SetIsLogin } = React.useContext(IsLoginContext);
   const [UserSession, SetUserSession] = React.useState<any>();
   const session = useSession();
   React.useEffect(() => {
@@ -18,8 +21,8 @@ export default function Home() {
 
   return (
     <>
-      <Navbar UserSession={UserSession} />
-      <MainBar UserSession={UserSession} />
+      <Navbar SetIsLogin={SetIsLogin} UserSession={UserSession} />
+      <MainBar SetIsLogin={SetIsLogin} UserSession={UserSession} />
       <BottomBar />
     </>
   );

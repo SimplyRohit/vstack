@@ -1,13 +1,13 @@
 "use client";
-import { GetAiMessage } from "@/actions/GetAiMessage";
+import { GetAiMessage } from "@/actions/GetAi";
 import ChatView from "@/components/ChatView";
 import EditorView from "@/components/EditorView";
 import { Message } from "@/lib/Types";
 import { useParams } from "next/navigation";
 import React, { useEffect } from "react";
 import { useSession } from "next-auth/react";
-import Navbar from "@/components/NavBar";
-import Prompt from "@/service/Ai/Prompt";
+import Navbar from "@/components/MainNavBar";
+import { Chat_Prompt } from "@/lib/Constant";
 
 const Chat = {
   chatid: "1234",
@@ -33,29 +33,26 @@ export default function Workspace() {
 
   const [Message, setMessage] = React.useState<Message[]>([]);
   useEffect(() => {
-    const HandleMessage = async () => {
-      await setMessage(Chat.messages);
-      if (Chat.messages.length === 1) {
-        const data = await GetAiMessage(
-          Chat.messages[0].content + Prompt.CHAT_PROMPT
-        );
-        setMessage((prev) => [
-          ...prev,
-          { role: "assistant", content: data.content as string },
-        ]);
-      }
-    };
-
-    HandleMessage();
+    // const HandleMessage = async () => {
+    //   await setMessage(Chat.messages);
+    //   if (Chat.messages.length === 1) {
+    //     const data = await GetAiMessage(Chat.messages[0].content + Chat_Prompt);
+    //     setMessage((prev) => [
+    //       ...prev,
+    //       { role: "assistant", content: data.content as string },
+    //     ]);
+    //   }
+    // };
+    // HandleMessage();
   }, []);
 
   const HandleUpdate = async () => {
-    setMessage((prev) => [...prev, { role: "user", content: text }]);
-    const data = await GetAiMessage(text);
-    setMessage((prev) => [
-      ...prev,
-      { role: "assistant", content: data.content as string },
-    ]);
+    // setMessage((prev) => [...prev, { role: "user", content: text }]);
+    // const data = await GetAiMessage(text);
+    // setMessage((prev) => [
+    //   ...prev,
+    //   { role: "assistant", content: data.content as string },
+    // ]);
   };
 
   return (

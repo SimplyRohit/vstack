@@ -3,6 +3,8 @@ import { eq } from "drizzle-orm";
 import { db } from "@/service/Database/index";
 import { Users } from "@/service/Database/schema";
 import { auth } from "@/service/Auth/auth";
+
+///////////////////////////////////////////////////////////////////////////
 export async function GetUser() {
   const currentUser = await auth();
   const user = currentUser?.user;
@@ -30,3 +32,5 @@ export async function GetUser() {
     return { error, status: 401 };
   }
 }
+
+///////////////////////////////////////////////////////////////////////////
