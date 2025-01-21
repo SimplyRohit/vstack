@@ -1,73 +1,85 @@
 "use client";
-import { GetAiMessage } from "@/actions/GetAi";
+import { GetAiCode, GetAiMessage } from "@/actions/GetAi";
 import ChatView from "@/components/ChatView";
 import EditorView from "@/components/EditorView";
 import { Message } from "@/lib/Types";
 import { useParams } from "next/navigation";
 import React, { useEffect } from "react";
 import { useSession } from "next-auth/react";
-import Navbar from "@/components/MainNavBar";
-import { Chat_Prompt } from "@/lib/Constant";
-
-const Chat = {
-  chatid: "1234",
-  messages: [
-    {
-      role: "user",
-      content: "make a todo app",
-    },
-  ],
-};
+import { Chat_Prompt, Code_Gen_Prompt, Default_File } from "@/lib/Constant";
+import { IsLoginContext, UserMessageContext } from "@/lib/Context";
+import MainNavBar from "@/components/MainNavBar";
+import { GetChat, UpdateChat } from "@/actions/GetChat";
 
 export default function Workspace() {
+  const { UserMessage, SetUserMessage } = React.useContext(UserMessageContext);
   const [UserSession, SetUserSession] = React.useState<any>();
   const session = useSession();
-  React.useEffect(() => {
-    const Handle = async () => {
-      await SetUserSession(session.data?.user);
-    };
-    Handle();
-  });
   const [text, setText] = React.useState<string>("");
   const params = useParams();
-
+  const chatid = params.id as string;
   const [Message, setMessage] = React.useState<Message[]>([]);
+  const [files, setFiles] = React.useState<any>({ ...Default_File });
+  const user = session.data?.user;
   useEffect(() => {
-    // const HandleMessage = async () => {
-    //   await setMessage(Chat.messages);
-    //   if (Chat.messages.length === 1) {
-    //     const data = await GetAiMessage(Chat.messages[0].content + Chat_Prompt);
-    //     setMessage((prev) => [
-    //       ...prev,
-    //       { role: "assistant", content: data.content as string },
-    //     ]);
-    //   }
-    // };
-    // HandleMessage();
+    const CheckChat = async () => {
+      await SetUserSession(user);
+      const data = await GetChat({ chatid, UserMessage });
+      setFiles({ ...Default_File, ...(data.files as {}) });
+      if (data.status === 200 || data.status === 201) {
+        setMessage(data.messages as Message[]);
+      }
+      SetUserMessage("");
+    };
+    CheckChat();
   }, []);
 
+  const HandleCode = async () => {
+    const data2 = await GetAiCode(
+      Message[Message.length - 1].content + Code_Gen_Prompt
+    );
+    const merge = {
+      ...Default_File,
+      ...data2.content.files,
+    };
+    setFiles(merge);
+    await UpdateChat(chatid, Message as [], data2.content.files);
+  };
+  const HandleMessage = async () => {
+    const data1 = await GetAiMessage(
+      Message[Message.length - 1].content + Chat_Prompt
+    );
+    HandleCode();
+    setTimeout(() => {
+      setMessage((prev) => [
+        ...prev,
+        { role: "assistant", content: data1.content },
+      ]);
+    }, 1000);
+  };
+
+  useEffect(() => {
+    if (Message.length > 0) {
+      if (Message[Message.length - 1].role === "user") {
+        HandleMessage();
+      }
+    }
+  }, [Message]);
+
   const HandleUpdate = async () => {
-    // setMessage((prev) => [...prev, { role: "user", content: text }]);
-    // const data = await GetAiMessage(text);
-    // setMessage((prev) => [
-    //   ...prev,
-    //   { role: "assistant", content: data.content as string },
-    // ]);
+    setMessage((prev) => [...prev, { role: "user", content: text }]);
+    setText("");
   };
 
   return (
-    <div className="flex w-full h-screen justify-center items-center flex-col">
-      <Navbar UserSession={UserSession} />
-      <div className="flex w-full h-full justify-center items-center flex-row">
-        <ChatView
-          Message={Message}
-          HandleUpdate={HandleUpdate}
-          text={text}
-          setText={setText}
-        />
-        {/* codeView */}
-        <EditorView Message={Message} />
-      </div>
+    <div className="flex w-full  h-full p-2 gap-3 flex-grow justify-center items-center flex-row">
+      <ChatView
+        Message={Message}
+        HandleUpdate={HandleUpdate}
+        text={text}
+        setText={setText}
+      />
+      <EditorView files={files} />
     </div>
   );
 }

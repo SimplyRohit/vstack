@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React from "react";
 
 import {
   SandpackProvider,
@@ -8,75 +8,70 @@ import {
   SandpackFileExplorer,
   SandpackPreview,
 } from "@codesandbox/sandpack-react";
-import { Message } from "@/lib/Types";
-import { GetAiCode } from "@/actions/GetAi";
-import { Code_Gen_Prompt, Default_File, Dependency } from "@/lib/Constant";
-export default function EditorView({ Message }: { Message: Message[] }) {
+
+import { Dependency } from "@/lib/Constant";
+import { cn } from "@/lib/utils";
+export default function EditorView({ files }: { files: {} }) {
   const [Active, setActive] = React.useState<string>("code");
-  const [files, setFiles] = React.useState<any>({ ...Default_File });
-
-  useEffect(() => {
-    // const HandleCode = async () => {
-    //   if (Message?.length > 0) {
-    //     const role = Message[Message.length - 1].role;
-    //     if (role === "user") {
-    //       const data = await GetAiCode(
-    // Message[Message.length - 1].content + Code_Gen_Prompt
-    //       );
-    //       const merge = {
-    //         ...Default_File,
-    //         ...data.content.files,
-    //       };
-    //       setFiles(merge);
-    //     }
-    //   }
-    // };
-    // HandleCode();
-  }, [Message]);
-
+  console.log(Active);
   return (
-    <div className="flex  w-full h-full p-1  ">
-      <div className="flex w-full h-full  rounded-xl border flex-col">
-        <div className="flex w-full h-[50px] gap-2 items-center justify-start">
-          <div className="flex border ml-5 p-2 gap-2 rounded-xl ">
-            <h1 onClick={() => setActive("code")}>Code</h1>
-            <span>|</span>
-            <h1 onClick={() => setActive("preview")}>Preview</h1>
-          </div>
-        </div>
-
-        <SandpackProvider
-          files={files}
-          customSetup={{
-            dependencies: {
-              ...Dependency,
-            },
-          }}
-          theme={"dark"}
-          template="react"
-          options={{ externalResources: ["https://cdn.tailwindcss.com"] }}
-        >
-          <SandpackLayout className="">
-            {Active === "code" ? (
-              <>
-                <SandpackFileExplorer style={{ height: "70vh" }} />
-                <SandpackCodeEditor
-                  showInlineErrors={true}
-                  showLineNumbers={true}
-                  showTabs={true}
-                  closableTabs={true}
-                  style={{ height: "70vh" }}
-                />
-              </>
-            ) : (
-              <SandpackPreview
-                style={{ height: "70vh" }}
-                showNavigator={true}
-              />
+    <div className="flex w-[calc(100%-460px)] bg-[#151515]  min-h-[calc(100vh-70px)]  border flex-col rounded-xl border-[#3a3a3a]  p-1  ">
+      <div className="flex w-full h-[50px] gap-2  items-center justify-start">
+        <div className="flex  items-center flex-wrap shrink-0 gap-1 bg-bolt-elements-background-depth-1 overflow-hidden rounded-full p-1">
+          <button
+            onClick={() => setActive("code")}
+            className={cn(
+              `text-sm px-2.5 ${Active === "code" && "bg-blue-600"} py-0.5 rounded-full relative text-bolt-elements-item-contentAccent`
             )}
-          </SandpackLayout>
-        </SandpackProvider>
+          >
+            Code
+            <span className="absolute inset-0 z-0 bg-bolt-elements-item-backgroundAccent rounded-full transform: none transform-origin: 50% 50% 0px"></span>
+          </button>
+          <button
+            onClick={() => setActive("preview")}
+            className={cn(
+              `bg-transparent text-sm ${Active === "preview" && "bg-blue-600"} px-2.5 py-0.5 rounded-full relative text-bolt-elements-item-contentDefault hover:text-bolt-elements-item-contentActive`
+            )}
+          >
+            Preview
+          </button>
+        </div>
       </div>
+
+      <SandpackProvider
+        files={files}
+        customSetup={{
+          dependencies: {
+            ...Dependency,
+          },
+        }}
+        theme={"dark"}
+        template="react"
+        options={{ externalResources: ["https://cdn.tailwindcss.com"] }}
+      >
+        <SandpackLayout className="">
+          {Active === "code" ? (
+            <>
+              <SandpackFileExplorer
+                className=""
+                style={{ height: "calc(100vh - 130px)" }}
+              />
+              <SandpackCodeEditor
+                showInlineErrors={true}
+                showLineNumbers={true}
+                showTabs={true}
+                closableTabs={true}
+                style={{ height: "calc(100vh - 130px)" }}
+              />
+            </>
+          ) : (
+            <SandpackPreview
+              style={{ height: "calc(100vh - 130px)" }}
+              showNavigator={true}
+            />
+          )}
+        </SandpackLayout>
+      </SandpackProvider>
     </div>
   );
 }

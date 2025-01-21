@@ -1,12 +1,11 @@
-import { TrendingUpDown } from "lucide-react";
 import React from "react";
 
 export const UserMessageContext = React.createContext<{
-  userMessage: string;
-  setUserMessage: React.Dispatch<React.SetStateAction<string>>;
+  UserMessage: string;
+  SetUserMessage: React.Dispatch<React.SetStateAction<string>>;
 }>({
-  userMessage: "",
-  setUserMessage: () => {},
+  UserMessage: "",
+  SetUserMessage: () => {},
 });
 
 export const IsLoginContext = React.createContext<{

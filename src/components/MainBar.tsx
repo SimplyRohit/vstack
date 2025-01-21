@@ -3,34 +3,12 @@ import { Link2, WandSparkles, MoveRight, Forward } from "lucide-react";
 import React from "react";
 import { cn } from "@/lib/utils";
 import { Suggestions } from "@/lib/Constant";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { MakeChat } from "@/actions/GetChat";
+// import { MakeChat } from "@/actions/GetChat";
 import { Cover } from "./ui/cover";
-import Image from "next/image";
-import {
-  AngularLogo,
-  AstroLogo,
-  NativeLogo,
-  NextLogo,
-  NuxtLogo,
-  ReactLogo,
-  SveletLogo,
-  TypeScriptLogo,
-  ViteLogo,
-  VueLogo,
-} from "./Svg";
+import * as Svg from "./Svg";
+import { UserMessageContext } from "@/lib/Context";
+import { signIn } from "next-auth/react";
 
 export default function MainBar({
   UserSession,
@@ -39,27 +17,29 @@ export default function MainBar({
   UserSession: any;
   SetIsLogin: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
+  const { UserMessage, SetUserMessage } = React.useContext(UserMessageContext);
+
   const [IsDialogOpen, setIsDialogOpen] = React.useState(false);
   const [text, setText] = React.useState<string>("");
   const router = useRouter();
   const handleSubmit = async () => {
     if (!UserSession) {
-      SetIsLogin(true);
+      signIn();
       return;
     }
     const chatid = Math.random().toString(36).slice(2);
-    const data = await MakeChat({
-      chatid,
-      message: {
-        role: "user",
-        content: text,
-      },
-    });
-    if (data.status === 400 || data.status === 401) {
-      alert("some error");
-      return;
-    }
-
+    // const data = await MakeChat({
+    //   chatid,
+    //   message: {
+    //     role: "user",
+    //     content: text,
+    //   },
+    // });
+    // if (data.status === 400 || data.status === 401) {
+    //   alert("some error");
+    //   return;
+    // }
+    SetUserMessage(text);
     router.push(`/chat/${chatid}`);
   };
 
@@ -97,7 +77,7 @@ export default function MainBar({
               onClick={() => handleSubmit()}
               className={cn(text.length === 0 && "hidden", "     text-white ")}
             >
-              <Forward className="w-7 h-7 " />
+              <Forward className="w-7 h-7 cursor-pointer " />
             </div>
           </div>
         </div>
@@ -117,18 +97,18 @@ export default function MainBar({
           start a blank app with your favorite stack
         </p>
         <div className="flex w-[600px] gap-5 mt-3 items-center justify-center">
-          <AngularLogo className="w-11 h-11  cursor-not-allowed opacity-50 hover:opacity-100  " />
-          <AstroLogo className="w-14 h-14 cursor-not-allowed opacity-50 hover:opacity-100  " />
-          <NativeLogo className="w-14 h-14  cursor-not-allowed opacity-50 hover:opacity-100" />
-          <NextLogo className="w-12 h-12  cursor-not-allowed opacity-50 hover:opacity-100" />
-          <NuxtLogo className="w-14 h-14  cursor-not-allowed opacity-50 hover:opacity-100" />
+          <Svg.AngularLogo className="w-11 h-11  cursor-not-allowed opacity-50 hover:opacity-100  " />
+          <Svg.AstroLogo className="w-14 h-14 cursor-not-allowed opacity-50 hover:opacity-100  " />
+          <Svg.NativeLogo className="w-14 h-14  cursor-not-allowed opacity-50 hover:opacity-100" />
+          <Svg.NextLogo className="w-12 h-12  cursor-not-allowed opacity-50 hover:opacity-100" />
+          <Svg.NuxtLogo className="w-14 h-14  cursor-not-allowed opacity-50 hover:opacity-100" />
         </div>
         <div className="flex w-[600px]  gap-5 mt-3 items-center justify-center">
-          <TypeScriptLogo className="w-14  cursor-not-allowed h-14 mb-3 opacity-50 hover:opacity-100" />
-          <ReactLogo className="w-12 h-12  cursor-not-allowed opacity-50 hover:opacity-100" />
-          <SveletLogo className="w-14 h-14  cursor-not-allowed opacity-50 hover:opacity-100" />
-          <ViteLogo className="w-12 h-12  cursor-not-allowed opacity-50 hover:opacity-100" />
-          <VueLogo className="w-12 h-12 cursor-not-allowed opacity-50 hover:opacity-100" />
+          <Svg.TypeScriptLogo className="w-14  cursor-not-allowed h-14 mb-3 opacity-50 hover:opacity-100" />
+          <Svg.ReactLogo className="w-12 h-12  cursor-not-allowed opacity-50 hover:opacity-100" />
+          <Svg.SveletLogo className="w-14 h-14  cursor-not-allowed opacity-50 hover:opacity-100" />
+          <Svg.ViteLogo className="w-12 h-12  cursor-not-allowed opacity-50 hover:opacity-100" />
+          <Svg.VueLogo className="w-12 h-12 cursor-not-allowed opacity-50 hover:opacity-100" />
         </div>
       </div>
     </div>

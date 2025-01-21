@@ -1,6 +1,6 @@
 {
-  "id": "9e033e49-3753-4568-a678-7646435ed384",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "f9d6b993-7ae2-4e9b-851b-a50d1c844390",
+  "prevId": "9e033e49-3753-4568-a678-7646435ed384",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -30,13 +30,13 @@
           "name": "files",
           "type": "jsonb",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "messages": {
           "name": "messages",
           "type": "jsonb[]",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         }
       },
       "indexes": {},

@@ -11,7 +11,7 @@ export default function Verify() {
     const handle = async () => {
       const data = await GetUser();
       if (data.status === 400 || data.status === 401) {
-        // signOut();
+        signOut();
         setState("failed");
         return;
       }

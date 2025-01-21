@@ -1,19 +1,20 @@
 CREATE TYPE "public"."user_role" AS ENUM('user', 'admin');--> statement-breakpoint
 CREATE TABLE "chats" (
 	"id" serial PRIMARY KEY NOT NULL,
-	"user_id" text,
-	"chat_id" text NOT NULL,
-	"messages" jsonb DEFAULT '[]'::jsonb,
+	"user_id" varchar,
+	"chat_id" varchar(30) NOT NULL,
+	"files" jsonb NOT NULL,
+	"messages" jsonb[] NOT NULL,
 	CONSTRAINT "chats_chat_id_unique" UNIQUE("chat_id")
 );
 --> statement-breakpoint
 CREATE TABLE "users" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"user_role" "user_role" DEFAULT 'user' NOT NULL,
-	"userid" text NOT NULL,
-	"email" text NOT NULL,
-	"name" text,
-	"image" text,
+	"userid" varchar(30) NOT NULL,
+	"email" varchar(30) NOT NULL,
+	"name" varchar(30),
+	"image" varchar(150),
 	"tokens" integer DEFAULT 1000 NOT NULL,
 	CONSTRAINT "users_userid_unique" UNIQUE("userid")
 );

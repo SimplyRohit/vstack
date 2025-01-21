@@ -2,7 +2,8 @@
 import { chatSession, codeSession } from "@/service/Ai";
 
 /////////////////////////////////////////////////////////////////////////////////
-export async function GetAiMessage(Message: string) {
+
+export async function GetAiMessage(Message: string): Promise<any> {
   try {
     const data = await chatSession.sendMessage(Message);
     if (
@@ -13,7 +14,7 @@ export async function GetAiMessage(Message: string) {
     ) {
       return {
         status: 200,
-        content: data.response.candidates[0].content.parts[0].text,
+        content: data.response.candidates[0].content.parts[0].text as string,
       };
     } else {
       throw new Error("Invalid response structure or missing candidates");
@@ -25,7 +26,7 @@ export async function GetAiMessage(Message: string) {
 
 /////////////////////////////////////////////////////////////////////////////////
 
-export async function GetAiCode(Message: string) {
+export async function GetAiCode(Message: string): Promise<any> {
   try {
     const data = await codeSession.sendMessage(Message);
 

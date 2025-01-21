@@ -21,8 +21,8 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       session.user.id = token.id as string;
       return session;
     },
-    async redirect({ baseUrl }) {
-      return baseUrl + "/verify";
-    },
+    // async redirect({ baseUrl }) {
+    //   return baseUrl + "/verify";
+    // },
   },
 });
