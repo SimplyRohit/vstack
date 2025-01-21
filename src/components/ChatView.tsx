@@ -1,81 +1,99 @@
-import { Forward, Link2, MoveRight, WandSparkles } from "lucide-react";
+import { Forward, Link2, WandSparkles } from "lucide-react";
 import { Textarea } from "./ui/textarea";
-import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
 import { Message } from "@/lib/Types";
 import ReactMarkdown from "react-markdown";
-import { Item } from "@radix-ui/react-dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { useSession } from "next-auth/react";
+import TypingAnimation from "@/components/ui/typing-animation";
 export default function ChatView({
+  codeLoading,
+  animation,
   Message,
   HandleUpdate,
   text,
   setText,
 }: {
+  codeLoading: boolean;
+  animation: boolean;
   Message: Message[];
   HandleUpdate: () => void;
   text: string;
   setText: React.Dispatch<React.SetStateAction<string>>;
 }) {
+  const user = useSession().data?.user;
   return (
-    <div className="flex-grow w-[450px] h-[calc(100vh-70px)]  overflow-y-scroll items-center flex flex-col rounded-xl">
-      {/* ChaitView */}
-      <div className="flex flex-col items-center mb-[200px] w-full">
+    <div className="mb-[30px] flex h-[calc(100vh-100px)] w-[450px] flex-grow flex-col items-center overflow-y-scroll rounded-xl scrollbar-hide">
+      <div className="mb-[200px] flex w-full flex-col items-center">
         {Message.map((item, index) => {
           return (
             <div
               className={cn(
-                item.role === "user" ? " font-bold " : "  text-base ",
-                "flex my-2 w-[400px] flex-shrink  rounded-xl  border "
+                item.role === "user" ? "font-bold" : "text-base",
+                "my-2 flex w-[400px] flex-shrink rounded-xl border",
               )}
               key={index}
             >
-              {item.role === "user" && (
-                <Avatar className=" border m-2  border-[#3a3a3a]">
-                  <AvatarImage src={""} alt={"Avatar"} />
-                  <AvatarFallback>CN</AvatarFallback>
-                </Avatar>
+              {item.role === "user" ? (
+                <>
+                  <Avatar className="m-2 border border-[#3a3a3a]">
+                    <AvatarImage
+                      src={user?.image || "/default-avatar.png"}
+                      alt={"Avatar"}
+                    />
+                    <AvatarFallback>CN</AvatarFallback>
+                  </Avatar>
+                  <ReactMarkdown className="p-3 text-[1.1]">
+                    {item.content}
+                  </ReactMarkdown>
+                </>
+              ) : item.role === "assistant" && animation ? (
+                <TypingAnimation className="p-3 text-base" duration={10}>
+                  {item.content}
+                </TypingAnimation>
+              ) : (
+                <ReactMarkdown className="p-3 text-base">
+                  {item.content}
+                </ReactMarkdown>
               )}
-              <ReactMarkdown className="p-3">{item.content}</ReactMarkdown>
             </div>
           );
         })}
       </div>
 
-      <div className="flex absolute z-10 bottom-1 mb-2 bg-transparent left-0 ml-[10px] flex-col w-[450px] h-[200px] rounded-xl  border border-[#3a3a3a] backdrop-blur-3xl ">
+      <div className="absolute bottom-1 left-0 z-10 mb-2 ml-[10px] flex h-[200px] w-[450px] flex-col rounded-xl border border-[#3a3a3a] bg-transparent backdrop-blur-3xl">
         <Textarea
+          disabled={codeLoading}
           value={text}
           inputMode="text"
           onChange={(e) => setText(e.target.value)}
           draggable="true"
           placeholder="See the magic ........"
-          className=" font-bold  focus-visible:ring-0 w-full h-full border-none resize-none"
+          className="h-full w-full resize-none border-none font-bold focus-visible:ring-0"
         />
-        <div className="flex w-full h-[50px] items-center flex-grow justify-between">
-          <div className="items-center flex">
-            <Link2 className="-rotate-45 cursor-pointer  ml-3 opacity-80"></Link2>
+        <div className="flex h-[50px] w-full flex-grow items-center justify-between">
+          <div className="flex items-center">
+            <Link2 className="ml-3 -rotate-45 cursor-pointer opacity-80"></Link2>
             <WandSparkles
               className={cn(
                 text.length === 0
-                  ? "opacity-50 cursor-not-allowed"
-                  : "opacity-80 cursor-pointer",
-                "mr-3   w-5 ml-2"
+                  ? "cursor-not-allowed opacity-50"
+                  : "cursor-pointer opacity-80",
+                "ml-2 mr-3 w-5",
               )}
             ></WandSparkles>
           </div>
           <div className="flex flex-grow"></div>
-          <div className="flex items-center justify-center mr-3 ">
+          <div className="mr-3 flex items-center justify-center">
             <div
               onClick={() => HandleUpdate()}
-              className={cn(text.length === 0 && "hidden", "     text-white ")}
+              className={cn(text.length === 0 && "hidden", "text-white")}
             >
-              <Forward className="w-7 h-7 cursor-pointer " />
+              <Forward className="h-7 w-7 cursor-pointer" />
             </div>
           </div>
         </div>
       </div>
-
-      {/* SendChat */}
     </div>
   );
 }

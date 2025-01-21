@@ -5,31 +5,38 @@ import { SessionProvider } from "next-auth/react";
 import { cn } from "@/lib/utils";
 import MainSidebar from "@/components/MainSidebar";
 import React from "react";
-import { IsLoginContext, UserMessageContext } from "@/lib/Context";
+import { SandBoxContext, UserMessageContext } from "@/lib/Context";
 import MainNavBar from "@/components/MainNavBar";
-import { useSession } from "next-auth/react";
+import BottomBar from "@/components/BottomBar";
+import { usePathname } from "next/navigation";
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [IsLogin, SetIsLogin] = React.useState(false);
+  const [sandBox, setsandBox] = React.useState({
+    sandBoxType: "",
+    timeStamp: 0,
+  });
+  const pathname = usePathname();
   const [UserMessage, SetUserMessage] = React.useState("");
+
   return (
     <SessionProvider>
       <UserMessageContext.Provider value={{ UserMessage, SetUserMessage }}>
-        <IsLoginContext.Provider value={{ IsLogin, SetIsLogin }}>
+        <SandBoxContext.Provider value={{ sandBox, setsandBox }}>
           <html lang="en">
-            <body className={cn(`${GeistMono.className} antialiased `)}>
-              <div className="flex flex-col min-h-screen bg-gradient-to-br from-[#141414] via-[#222222]  to-[#383737]   ">
+            <body className={cn(`${GeistMono.className} antialiased`)}>
+              <div className="flex min-h-screen flex-col bg-gradient-to-br from-[#141414] via-[#222222] to-[#383737]">
                 <MainNavBar />
                 <MainSidebar />
                 {children}
+                {!pathname.startsWith("/chat") && <BottomBar />}
               </div>
             </body>
           </html>
-        </IsLoginContext.Provider>
+        </SandBoxContext.Provider>
       </UserMessageContext.Provider>
     </SessionProvider>
   );

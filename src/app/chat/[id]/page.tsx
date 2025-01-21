@@ -4,82 +4,99 @@ import ChatView from "@/components/ChatView";
 import EditorView from "@/components/EditorView";
 import { Message } from "@/lib/Types";
 import { useParams } from "next/navigation";
-import React, { useEffect } from "react";
-import { useSession } from "next-auth/react";
+import React from "react";
 import { Chat_Prompt, Code_Gen_Prompt, Default_File } from "@/lib/Constant";
-import { IsLoginContext, UserMessageContext } from "@/lib/Context";
-import MainNavBar from "@/components/MainNavBar";
+import { UserMessageContext } from "@/lib/Context";
 import { GetChat, UpdateChat } from "@/actions/GetChat";
+import { Loader } from "lucide-react";
 
 export default function Workspace() {
   const { UserMessage, SetUserMessage } = React.useContext(UserMessageContext);
-  const [UserSession, SetUserSession] = React.useState<any>();
-  const session = useSession();
   const [text, setText] = React.useState<string>("");
   const params = useParams();
   const chatid = params.id as string;
   const [Message, setMessage] = React.useState<Message[]>([]);
   const [files, setFiles] = React.useState<any>({ ...Default_File });
-  const user = session.data?.user;
-  useEffect(() => {
+  const [codeLoading, setCodeLoading] = React.useState<boolean>(false);
+  const [pageLoading, setPageLoading] = React.useState<boolean>(true);
+  const [animation, setAnimation] = React.useState<boolean>(false);
+  React.useEffect(() => {
     const CheckChat = async () => {
-      await SetUserSession(user);
       const data = await GetChat({ chatid, UserMessage });
-      setFiles({ ...Default_File, ...(data.files as {}) });
       if (data.status === 200 || data.status === 201) {
+        setFiles({ ...Default_File, ...(data.files as {}) });
         setMessage(data.messages as Message[]);
       }
       SetUserMessage("");
+      setPageLoading(false);
     };
     CheckChat();
   }, []);
 
-  const HandleCode = async () => {
-    const data2 = await GetAiCode(
-      Message[Message.length - 1].content + Code_Gen_Prompt
-    );
-    const merge = {
-      ...Default_File,
-      ...data2.content.files,
-    };
-    setFiles(merge);
-    await UpdateChat(chatid, Message as [], data2.content.files);
+  const HandleUpdateChat = async (
+    chatid: string,
+    Message: Message[],
+    files: any,
+  ) => {
+    await UpdateChat(chatid, Message as [], files);
   };
   const HandleMessage = async () => {
-    const data1 = await GetAiMessage(
-      Message[Message.length - 1].content + Chat_Prompt
-    );
-    HandleCode();
-    setTimeout(() => {
+    setCodeLoading(true);
+
+    const userChat = Message[Message.length - 1].content;
+    const data1 = await GetAiMessage(userChat + Chat_Prompt);
+    if (data1.status === 200) {
       setMessage((prev) => [
         ...prev,
         { role: "assistant", content: data1.content },
       ]);
-    }, 1000);
+
+      const data2 = await GetAiCode(userChat + Code_Gen_Prompt);
+      if (data2.status === 200) {
+        const files = data2.content.files;
+        const merge = {
+          ...Default_File,
+          ...files,
+        };
+        setFiles(merge);
+
+        HandleUpdateChat(chatid, Message as [], files);
+      }
+      setCodeLoading(false);
+    }
   };
 
-  useEffect(() => {
-    if (Message.length > 0) {
-      if (Message[Message.length - 1].role === "user") {
-        HandleMessage();
-      }
+  React.useEffect(() => {
+    if (Message.length > 0 && Message[Message.length - 1].role === "user") {
+      HandleMessage();
+      setAnimation(true);
     }
   }, [Message]);
 
   const HandleUpdate = async () => {
+    console.log("updated");
     setMessage((prev) => [...prev, { role: "user", content: text }]);
+
     setText("");
   };
 
   return (
-    <div className="flex w-full  h-full p-2 gap-3 flex-grow justify-center items-center flex-row">
-      <ChatView
-        Message={Message}
-        HandleUpdate={HandleUpdate}
-        text={text}
-        setText={setText}
-      />
-      <EditorView files={files} />
+    <div className="flex h-full w-full flex-grow flex-row items-center justify-center gap-3 p-2">
+      {pageLoading ? (
+        <Loader className="animate-spin" />
+      ) : (
+        <>
+          <ChatView
+            codeLoading={codeLoading}
+            Message={Message}
+            HandleUpdate={HandleUpdate}
+            text={text}
+            setText={setText}
+            animation={animation}
+          />
+          <EditorView files={files} codeLoading={codeLoading} />
+        </>
+      )}
     </div>
   );
 }

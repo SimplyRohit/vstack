@@ -8,10 +8,12 @@ export const UserMessageContext = React.createContext<{
   SetUserMessage: () => {},
 });
 
-export const IsLoginContext = React.createContext<{
-  IsLogin: boolean;
-  SetIsLogin: React.Dispatch<React.SetStateAction<boolean>>;
+export const SandBoxContext = React.createContext<{
+  sandBox: { sandBoxType: string; timeStamp: number };
+  setsandBox: React.Dispatch<
+    React.SetStateAction<{ sandBoxType: string; timeStamp: number }>
+  >;
 }>({
-  IsLogin: false,
-  SetIsLogin: () => {},
+  sandBox: { sandBoxType: "", timeStamp: 0 },
+  setsandBox: () => {},
 });

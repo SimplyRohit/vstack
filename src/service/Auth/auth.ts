@@ -5,6 +5,8 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
   session: { strategy: "jwt" },
   ...authConfig,
   secret: process.env.AUTH_SECRET,
+  trustHost: true,
+
   callbacks: {
     async signIn() {
       return true;
@@ -21,6 +23,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       session.user.id = token.id as string;
       return session;
     },
+
     // async redirect({ baseUrl }) {
     //   return baseUrl + "/verify";
     // },

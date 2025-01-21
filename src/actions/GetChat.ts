@@ -3,6 +3,7 @@ import { and, eq, sql } from "drizzle-orm";
 import { db } from "@/service/Database/index";
 import { Chats } from "@/service/Database/schema";
 import { auth } from "@/service/Auth/auth";
+import { error } from "console";
 
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -32,6 +33,8 @@ export async function GetChat({
         await db.insert(Chats).values({
           chatid,
           userid: user.id as string,
+          files: {},
+          messages: [],
         });
         return {
           status: 201,
@@ -48,6 +51,7 @@ export async function GetChat({
             content: UserMessage,
           },
         ],
+        files: {},
       });
       return {
         status: 201,
@@ -82,10 +86,49 @@ export async function UpdateChat(chatid: string, message: [], file: {}) {
       .update(Chats)
       .set({ messages: message, files: file })
       .where(
-        and(eq(Chats.userid, user.id as string), eq(Chats.chatid, chatid))
+        and(eq(Chats.userid, user.id as string), eq(Chats.chatid, chatid)),
       );
   } catch (error) {
     console.log(error);
     return error;
+  }
+}
+
+export async function getAllChats() {
+  const currentUser = await auth();
+  const user = currentUser?.user;
+  if (!user) {
+    return 400;
+  }
+  try {
+    const data = await db
+      .select({ chatid: Chats.chatid })
+      .from(Chats)
+      .where(eq(Chats.userid, user.id as string));
+
+    return data;
+  } catch (error) {
+    console.log(error);
+    return 400;
+  }
+}
+
+export async function DeleteChat(chatid: string): Promise<number> {
+  const currentUser = await auth();
+  const user = currentUser?.user;
+  if (!user) {
+    return 400;
+  }
+  try {
+    await db
+      .delete(Chats)
+      .where(
+        and(eq(Chats.userid, user.id as string), eq(Chats.chatid, chatid)),
+      );
+
+    return 200;
+  } catch (error) {
+    console.log(error);
+    return 400;
   }
 }
