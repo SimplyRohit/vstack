@@ -19,7 +19,7 @@ export async function GetUser() {
       .where(eq(Users.userid, currentUser?.user?.id as string));
 
     if (exitinguser.length === 0) {
-      const newUser = await db.insert(Users).values({
+      await db.insert(Users).values({
         email: user.email as string,
         userid: currentUser?.user?.id as string,
         name: user.name,
@@ -34,3 +34,22 @@ export async function GetUser() {
 }
 
 ///////////////////////////////////////////////////////////////////////////
+
+export async function GetTokens() {
+  const currentUser = await auth();
+  const user = currentUser?.user;
+  try {
+    if (!user) {
+      return { status: 400 };
+    }
+
+    const exitingtokens = await db
+      .select({ tokens: Users.tokens })
+      .from(Users)
+      .where(eq(Users.userid, currentUser?.user?.id as string));
+
+    return { tokens: exitingtokens[0].tokens, status: 200 };
+  } catch (error) {
+    return { error, status: 401 };
+  }
+}

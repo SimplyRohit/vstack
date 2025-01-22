@@ -1,9 +1,7 @@
 "use server";
 import { chatSession, codeSession } from "@/service/Ai";
 
-export async function GetAiMessage(
-  Message: string,
-): Promise<{ status: number; content: string }> {
+export async function GetAiMessage(Message: string) {
   try {
     const data = await chatSession.sendMessage(Message);
     return {
@@ -11,17 +9,15 @@ export async function GetAiMessage(
       content: data.response.text(),
     };
   } catch (error) {
+    console.log(error);
     return {
       status: 400,
-      content: "Error",
+      content: "Failed to generate AI code",
     };
   }
 }
 
-export async function GetAiCode(Message: string): Promise<{
-  status: number;
-  content: any;
-}> {
+export async function GetAiCode(Message: string) {
   try {
     const data = await codeSession.sendMessage(Message);
     return {
@@ -32,7 +28,7 @@ export async function GetAiCode(Message: string): Promise<{
     console.log(error);
     return {
       status: 400,
-      content: "Error",
+      content: "Failed to generate AI code",
     };
   }
 }

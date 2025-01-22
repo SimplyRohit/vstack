@@ -10,12 +10,13 @@ import { Dependency } from "@/lib/Constant";
 import { cn } from "@/lib/utils";
 import EditorSandpack from "./EditorSandpack";
 import { Loader } from "lucide-react";
+import { FileStructure } from "@/lib/Types";
 
 export default function EditorView({
   files,
   codeLoading,
 }: {
-  files: {};
+  files: FileStructure;
   codeLoading: boolean;
 }) {
   const [Active, setActive] = React.useState<string>("code");

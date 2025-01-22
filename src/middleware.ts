@@ -7,7 +7,6 @@ export default auth(async function middleware(req) {
     nextUrl.pathname.startsWith("/chat") ||
     nextUrl.pathname.startsWith("/verify");
 
-  const isAuthPage = nextUrl.pathname.startsWith("/api/auth");
   if (!isAuthenticated && ProtectedRoute) {
     return NextResponse.redirect(new URL("/api/auth/signin", nextUrl));
   }

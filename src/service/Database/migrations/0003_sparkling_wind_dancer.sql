@@ -1,0 +1,1 @@
+ALTER TABLE "users" ALTER COLUMN "tokens" SET DEFAULT 20;

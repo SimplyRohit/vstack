@@ -14,7 +14,7 @@ export const Users = pgTable("users", {
   email: varchar("email", { length: 30 }).notNull(),
   name: varchar("name", { length: 30 }),
   image: varchar("image", { length: 150 }),
-  tokens: integer("tokens").notNull().default(1000),
+  tokens: integer("tokens").notNull().default(20),
 });
 
 export const Chats = pgTable("chats", {
@@ -23,4 +23,16 @@ export const Chats = pgTable("chats", {
   chatid: varchar("chat_id", { length: 30 }).notNull().unique(),
   files: jsonb("files"),
   messages: jsonb("messages").array(),
+});
+
+export const Transaction = pgTable("transction", {
+  id: serial("id").primaryKey(),
+  userid: varchar("user_id").references(() => Users.userid),
+  tokenupdated: integer("tokenupdated").notNull(),
+  createdAt: varchar("created_at")
+    .notNull()
+    .$default(() => new Date().toISOString()),
+  orderid: varchar("order_id").notNull(),
+  paymentid: varchar("payment_id").notNull(),
+  signature: varchar("signature").notNull(),
 });

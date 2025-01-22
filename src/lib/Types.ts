@@ -9,3 +9,7 @@ export type User = {
   image: string;
   id: string;
 };
+
+export type FileStructure = {
+  [key: string]: { code: string };
+};

@@ -5,10 +5,16 @@ import { SessionProvider } from "next-auth/react";
 import { cn } from "@/lib/utils";
 import MainSidebar from "@/components/MainSidebar";
 import React from "react";
-import { SandBoxContext, UserMessageContext } from "@/lib/Context";
+import {
+  AccountBillingContext,
+  SandBoxContext,
+  UserMessageContext,
+} from "@/lib/Context";
 import MainNavBar from "@/components/MainNavBar";
 import BottomBar from "@/components/BottomBar";
 import { usePathname } from "next/navigation";
+import AccountBilling from "@/components/account-billing";
+import { Toaster } from "react-hot-toast";
 
 export default function RootLayout({
   children,
@@ -21,21 +27,30 @@ export default function RootLayout({
   });
   const pathname = usePathname();
   const [UserMessage, SetUserMessage] = React.useState("");
-
+  const [accountBilling, setaccountBilling] = React.useState({
+    accountBillingType: "",
+    is: false,
+  });
   return (
     <SessionProvider>
       <UserMessageContext.Provider value={{ UserMessage, SetUserMessage }}>
         <SandBoxContext.Provider value={{ sandBox, setsandBox }}>
-          <html lang="en">
-            <body className={cn(`${GeistMono.className} antialiased`)}>
-              <div className="flex min-h-screen flex-col bg-gradient-to-br from-[#141414] via-[#222222] to-[#383737]">
-                <MainNavBar />
-                <MainSidebar />
-                {children}
-                {!pathname.startsWith("/chat") && <BottomBar />}
-              </div>
-            </body>
-          </html>
+          <AccountBillingContext.Provider
+            value={{ accountBilling, setaccountBilling }}
+          >
+            <html lang="en">
+              <body className={cn(`${GeistMono.className} antialiased`)}>
+                <div className="relative flex min-h-screen flex-col bg-gradient-to-br from-[#141414] via-[#222222] to-[#383737]">
+                  <Toaster position="top-center" reverseOrder={false} />
+                  {accountBilling.is && <AccountBilling />}
+                  <MainNavBar />
+                  <MainSidebar />
+                  {children}
+                  {!pathname.startsWith("/chat") && <BottomBar />}
+                </div>
+              </body>
+            </html>
+          </AccountBillingContext.Provider>
         </SandBoxContext.Provider>
       </UserMessageContext.Provider>
     </SessionProvider>

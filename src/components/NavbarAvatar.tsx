@@ -11,11 +11,13 @@ import {
 } from "./ui/dropdown-menu";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { cn } from "@/lib/utils";
-import { SandBoxContext } from "@/lib/Context";
+import { AccountBillingContext, SandBoxContext } from "@/lib/Context";
 import React from "react";
 import { usePathname } from "next/navigation";
 
 export default function NavbarAvatar() {
+  const { setaccountBilling } = React.useContext(AccountBillingContext);
+
   const { setsandBox } = React.useContext(SandBoxContext);
   const pathname = usePathname();
   const session = useSession();
@@ -63,7 +65,7 @@ export default function NavbarAvatar() {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Avatar className="mr-6 mt-2 border border-[#3a3a3a]">
-              <AvatarImage src={user?.image!} alt={"Avatar"} />
+              <AvatarImage src={user?.image as string} alt={"Avatar"} />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
           </DropdownMenuTrigger>
@@ -83,11 +85,25 @@ export default function NavbarAvatar() {
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem onClick={() => alert("coming soon")}>
+              <DropdownMenuItem
+                onClick={() =>
+                  setaccountBilling({
+                    accountBillingType: "account",
+                    is: true,
+                  })
+                }
+              >
                 <BadgeCheck />
                 Account
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => alert("coming soon")}>
+              <DropdownMenuItem
+                onClick={() =>
+                  setaccountBilling({
+                    accountBillingType: "billing",
+                    is: true,
+                  })
+                }
+              >
                 <CreditCard />
                 Billing
               </DropdownMenuItem>

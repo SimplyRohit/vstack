@@ -140,3 +140,26 @@ files:{
 
 - Use stock photos from unsplash where appropriate, only valid URLs you know exist. Do not download the images, only link to them in image tags.
    `;
+
+export const allBuy = [
+  {
+    tokens: 20,
+    price: 5,
+    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  },
+  {
+    tokens: 40,
+    price: 10,
+    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  },
+  {
+    tokens: 80,
+    price: 20,
+    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  },
+  {
+    tokens: 150,
+    price: 40,
+    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  },
+];
