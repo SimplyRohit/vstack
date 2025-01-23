@@ -144,22 +144,22 @@ files:{
 export const allBuy = [
   {
     tokens: 20,
-    price: 5,
+    price: "5",
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
   },
   {
     tokens: 40,
-    price: 10,
+    price: "5",
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
   },
   {
     tokens: 80,
-    price: 20,
+    price: "5",
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
   },
   {
     tokens: 150,
-    price: 40,
+    price: "5",
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
   },
 ];
