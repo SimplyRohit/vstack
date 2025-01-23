@@ -1,6 +1,6 @@
 import { codeSession } from "@/service/Ai";
 import { NextResponse } from "next/server";
-
+export const maxDuration = 15;
 export async function POST(req: Request) {
   try {
     const { message } = await req.json();
