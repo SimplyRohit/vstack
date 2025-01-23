@@ -24,8 +24,8 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       return session;
     },
 
-    // async redirect({ baseUrl }) {
-    //   return baseUrl + "/verify";
-    // },
+    async redirect({ baseUrl }) {
+      return baseUrl + "/verify";
+    },
   },
 });

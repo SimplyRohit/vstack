@@ -96,12 +96,14 @@ also you can use date-fns for date format and react-chartjs-2 chart, graph libra
 Return the response in JSON format with the following schema:
 {
   "projectTitle": "",
+  "explanation": "",
   "files": {
     "/App.js": {
       "code": ""
     },
-  
+    ...
   },
+  "generatedFiles": []
 }
 
 Here’s the reformatted and improved version of your prompt:
@@ -114,13 +116,14 @@ json
 Copy code
 {
   "projectTitle": "",
-  
+  "explanation": "",
   "files": {
     "/App.js": {
       "code": ""
     },
-  
-  }
+    ...
+  },
+  "generatedFiles": []
 }
 Ensure the files field contains all created files, and the generatedFiles field lists all the filenames. Each file's code should be included in the code field, following this example:
 files:{
@@ -128,6 +131,7 @@ files:{
     "code": "import React from 'react';\nimport './styles.css';\nexport default function App() {\n  return (\n    <div className='p-4 bg-gray-100 text-center'>\n      <h1 className='text-2xl font-bold text-blue-500'>Hello, Tailwind CSS with Sandpack!</h1>\n      <p className='mt-2 text-gray-700'>This is a live code editor.</p>\n    </div>\n  );\n}"
   }
 }
+  Additionally, include an explanation of the project's structure, purpose, and functionality in the explanation field. Make the response concise and clear in one paragraph.
   - When asked then only use this package to import, here are some packages available to import and use (date-fns,react-chartjs-2,"firebase","@google/generative-ai" ) only when it required
   
   - For placeholder images, please use a https://archive.org/download/placeholder-image/placeholder-image.jpg
@@ -145,21 +149,25 @@ export const allBuy = [
   {
     tokens: 20,
     price: 5,
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    description:
+      "Perfect for exploring the AI website builder with basic features.",
   },
   {
     tokens: 40,
     price: 10,
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    description:
+      "Ideal for small projects or trying out more advanced customization.",
   },
   {
     tokens: 80,
     price: 20,
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    description:
+      "Great for building professional websites with enhanced functionality.",
   },
   {
     tokens: 150,
     price: 40,
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    description:
+      "Best value for creating multiple websites with full AI capabilities.",
   },
 ];

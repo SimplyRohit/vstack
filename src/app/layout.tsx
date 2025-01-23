@@ -1,58 +1,23 @@
 "use client";
-import { GeistMono } from "geist/font/mono";
 import "./globals.css";
 import { SessionProvider } from "next-auth/react";
-import { cn } from "@/lib/utils";
-import MainSidebar from "@/components/MainSidebar";
 import React from "react";
-import {
-  AccountBillingContext,
-  SandBoxContext,
-  UserMessageContext,
-} from "@/lib/Context";
-import MainNavBar from "@/components/MainNavBar";
-import BottomBar from "@/components/BottomBar";
-import { usePathname } from "next/navigation";
-import AccountBilling from "@/components/account-billing";
-import { Toaster } from "react-hot-toast";
+import "./globals.css";
+import Provider from "@/components/provider";
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [sandBox, setsandBox] = React.useState({
-    sandBoxType: "",
-    timeStamp: 0,
-  });
-  const pathname = usePathname();
-  const [UserMessage, SetUserMessage] = React.useState("");
-  const [accountBilling, setaccountBilling] = React.useState({
-    accountBillingType: "",
-    is: false,
-  });
+  const metadata = {
+    title: "Your App Title",
+    description: "Description of your app.",
+  };
+
   return (
     <SessionProvider>
-      <UserMessageContext.Provider value={{ UserMessage, SetUserMessage }}>
-        <SandBoxContext.Provider value={{ sandBox, setsandBox }}>
-          <AccountBillingContext.Provider
-            value={{ accountBilling, setaccountBilling }}
-          >
-            <html lang="en">
-              <body className={cn(`${GeistMono.className} antialiased`)}>
-                <div className="relative flex min-h-screen flex-col bg-gradient-to-br from-[#141414] via-[#222222] to-[#383737]">
-                  <Toaster position="top-center" reverseOrder={false} />
-                  {accountBilling.is && <AccountBilling />}
-                  <MainNavBar />
-                  <MainSidebar />
-                  {children}
-                  {!pathname.startsWith("/chat") && <BottomBar />}
-                </div>
-              </body>
-            </html>
-          </AccountBillingContext.Provider>
-        </SandBoxContext.Provider>
-      </UserMessageContext.Provider>
+      <Provider>{children}</Provider>
     </SessionProvider>
   );
 }

@@ -34,5 +34,5 @@ export const Transaction = pgTable("transction", {
     .$default(() => new Date().toISOString()),
   orderid: varchar("order_id").notNull(),
   paymentid: varchar("payment_id").notNull(),
-  signature: varchar("signature").notNull(),
+  payerid: varchar("signature").notNull(),
 });

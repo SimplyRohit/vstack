@@ -5,7 +5,7 @@ import { UserMessageContext } from "@/lib/Context";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Textarea } from "@/components/ui/textarea";
-import { Link2, WandSparkles, Forward } from "lucide-react";
+import { Link2, WandSparkles, Forward, Hand } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Suggestions } from "@/lib/Constant";
 import { Cover } from "@/components/ui/cover";
@@ -23,7 +23,18 @@ export default function Home() {
       return;
     }
     const chatid = Math.random().toString(36).slice(2);
+
     SetUserMessage(text);
+    router.push(`/chat/${chatid}`);
+  };
+
+  const handleGenerate = async (suggestion: string) => {
+    if (!user) {
+      signIn();
+      return;
+    }
+    const chatid = Math.random().toString(36).slice(2);
+    SetUserMessage(suggestion);
     router.push(`/chat/${chatid}`);
   };
 
@@ -69,6 +80,7 @@ export default function Home() {
       <div className="mt-5 flex w-[600px] flex-wrap items-center justify-center gap-2">
         {Suggestions.map((suggestion, index) => (
           <p
+            onClick={() => handleGenerate(suggestion)}
             key={index}
             className="group flex cursor-pointer gap-3 truncate rounded-xl border border-[#3a3a3a] p-1 px-2 text-[12px]"
           >

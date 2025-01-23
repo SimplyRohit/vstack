@@ -3,66 +3,17 @@ import { eq, sql } from "drizzle-orm";
 import { db } from "@/service/Database/index";
 import { Transaction, Users } from "@/service/Database/schema";
 import { auth } from "@/service/Auth/auth";
-import crypto from "crypto";
-
-const generatedSignature = (
-  razorpayOrderId: string,
-  razorpayPaymentId: string,
-) => {
-  const keySecret = process.env.RAZORPAY_KEY_SECRET as string;
-  const sig = crypto
-    .createHmac("sha256", keySecret)
-    .update(razorpayOrderId + "|" + razorpayPaymentId)
-    .digest("hex");
-  return sig;
-};
-
-export async function payment({
-  razorpayOrderId,
-  razorpayPaymentId,
-  razorpaySignature,
-}: {
-  razorpayOrderId: string;
-  razorpayPaymentId: string;
-  razorpaySignature: string;
-}) {
-  const Session = await auth();
-  const user = Session?.user;
-  try {
-    if (!user) {
-      return {
-        message: "user not found ",
-        status: 400,
-      };
-    }
-    const signature = generatedSignature(razorpayOrderId, razorpayPaymentId);
-    console.log(signature);
-    if (signature !== razorpaySignature) {
-      return { message: "Invalid request", status: 400 };
-    }
-
-    return {
-      status: 200,
-      OrderId: razorpayOrderId as string,
-      PaymentId: razorpayPaymentId as string,
-      Signature: razorpaySignature as string,
-    };
-  } catch (error) {
-    console.error(error);
-    return { status: 400 };
-  }
-}
 
 export async function updateTokens({
   tokens,
-  OrderId,
-  PaymentId,
-  Signature,
+  orderId,
+  paymentId,
+  payerId,
 }: {
   tokens: number;
-  OrderId: string;
-  PaymentId: string;
-  Signature: string;
+  orderId: string;
+  paymentId: string;
+  payerId: string;
 }) {
   const currentUser = await auth();
   const user = currentUser?.user;
@@ -72,9 +23,9 @@ export async function updateTokens({
     }
     await db.transaction(async (tx) => {
       await tx.insert(Transaction).values({
-        orderid: OrderId,
-        paymentid: PaymentId,
-        signature: Signature,
+        orderid: orderId,
+        paymentid: paymentId,
+        payerid: payerId,
         tokenupdated: tokens,
         createdAt: new Date().toISOString(),
         userid: user.id,

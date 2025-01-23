@@ -12,7 +12,7 @@ const compat = new FlatCompat({
 const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
   {
-    files: ["src/components/EditorSandpack.tsx"],
+    files: ["src/components/EditorSandpack.tsx", "src/app/tokens/page.tsx"],
     rules: {
       "@typescript-eslint/ban-ts-comment": "off",
     },

@@ -10,12 +10,7 @@ type Chats = {
   chatid: string;
 }[];
 export default function MainSidebar() {
-  const [chats, setChats] = React.useState<Chats>([
-    { chatid: "12121" },
-    { chatid: "12121" },
-    { chatid: "12121" },
-    { chatid: "12121" },
-  ]);
+  const [chats, setChats] = React.useState<Chats>([]);
   const [open, setOpen] = React.useState(false);
   const user = useSession().data?.user;
   const router = useRouter();
@@ -73,6 +68,7 @@ export default function MainSidebar() {
           ) : (
             chats.slice(0, 8).map((item, index) => (
               <div
+                onClick={() => router.push(`/chat/${item.chatid}`)}
                 key={index}
                 className="my-1 flex items-center justify-between p-1 text-sm font-bold hover:bg-[#3d3d3d] hover:text-white active:bg-[#3d3d3d] active:text-white"
               >

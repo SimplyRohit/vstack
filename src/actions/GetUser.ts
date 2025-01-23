@@ -17,7 +17,7 @@ export async function GetUser() {
       .select()
       .from(Users)
       .where(eq(Users.userid, currentUser?.user?.id as string));
-
+    console.log(exitinguser);
     if (exitinguser.length === 0) {
       await db.insert(Users).values({
         email: user.email as string,
@@ -29,6 +29,7 @@ export async function GetUser() {
     }
     return { exitinguser, status: 200 };
   } catch (error) {
+    console.log(error);
     return { error, status: 401 };
   }
 }
