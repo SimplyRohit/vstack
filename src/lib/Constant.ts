@@ -96,7 +96,7 @@ also you can use date-fns for date format and react-chartjs-2 chart, graph libra
 
 Return the response in JSON format with the following schema:
 {
-  "projectTitle": "",
+ 
   "files": {
     "/App.js": {
       "code": ""
@@ -114,7 +114,7 @@ Return the response in JSON format with the following schema:
 json
 Copy code
 {
-  "projectTitle": "",
+
   "files": {
     "/App.js": {
       "code": ""
@@ -128,7 +128,6 @@ files:{
     "code": "import React from 'react';\nimport './styles.css';\nexport default function App() {\n  return (\n    <div className='p-4 bg-gray-100 text-center'>\n      <h1 className='text-2xl font-bold text-blue-500'>Hello, Tailwind CSS with Sandpack!</h1>\n      <p className='mt-2 text-gray-700'>This is a live code editor.</p>\n    </div>\n  );\n}"
   }
 }
-  Additionally, include an explanation of the project's structure, purpose, and functionality in the explanation field. Make the response concise and clear in one paragraph.
   - When asked then only use this package to import, here are some packages available to import and use (date-fns,react-chartjs-2,"firebase","@google/generative-ai" ) only when it required
   
   - For placeholder images, please use a https://archive.org/download/placeholder-image/placeholder-image.jpg

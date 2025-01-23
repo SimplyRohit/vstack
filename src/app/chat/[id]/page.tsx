@@ -1,6 +1,5 @@
 "use client";
-import axios from "axios";
-import { GetAiMessage } from "@/actions/GetAi";
+import { GetAiCode, GetAiMessage } from "@/actions/GetAi";
 import ChatView from "@/components/ChatView";
 import EditorView from "@/components/EditorView";
 import { FileStructure, Message } from "@/lib/Types";
@@ -67,9 +66,10 @@ export default function Workspace() {
       if (data1.status === 200) {
         setMessage((prev) => [...prev, aiMessage]);
         const message = userChat + "" + Code_Gen_Prompt;
-        const data2 = await axios.post("/api/aicode", { message });
-        if (data2.data.status === 200) {
-          const parsedfile = JSON.parse(data2.data.content);
+        const data2 = await GetAiCode(message);
+
+        if (data2.status === 200) {
+          const parsedfile = JSON.parse(data2.content);
           const files = parsedfile.files as FileStructure;
           const merge = {
             ...Default_File,
