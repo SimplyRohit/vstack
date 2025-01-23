@@ -5,7 +5,7 @@ import { UserMessageContext } from "@/lib/Context";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Textarea } from "@/components/ui/textarea";
-import { Link2, WandSparkles, Forward, Hand } from "lucide-react";
+import { Link2, WandSparkles, Forward } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Suggestions } from "@/lib/Constant";
 import { Cover } from "@/components/ui/cover";
