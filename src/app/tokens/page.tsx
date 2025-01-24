@@ -9,8 +9,10 @@ import toast from "react-hot-toast";
 
 export default function Pricing() {
   const notify = () => toast("payment failed");
+  const Session = useSession();
+  const user = Session.data?.user;
 
-  const user = useSession().data?.user;
+  // on payment success update tokens
   const onPaymentSuccess = async ({
     orderId,
     paymentId,
@@ -33,7 +35,7 @@ export default function Pricing() {
     });
   };
 
-  return !user ? (
+  return Session.status === "loading" ? (
     <div className="flex min-h-[calc(100vh-95px)] w-full items-center justify-center">
       <Loader className="animate-spin" />
     </div>

@@ -28,6 +28,7 @@ export default function Workspace() {
   const [animation, setAnimation] = React.useState<boolean>(false);
   const notify = () => toast("You have no tokens left");
 
+  //one time run
   const CheckChat = async () => {
     const data = await GetChat({ chatid, UserMessage });
     if (data.status === 200) {
@@ -42,6 +43,7 @@ export default function Workspace() {
     CheckChat();
   }, []);
 
+  //update chat files and messages
   const HandleUpdateChat = async (
     chatid: string,
     newMessage: Message[],
@@ -68,6 +70,8 @@ export default function Workspace() {
       if (data1.status === 200) {
         setMessage((prev) => [...prev, aiMessage]);
         const message = userChat + "" + Code_Gen_Prompt;
+
+        //doing this bcz of vercel function time out error
         try {
           const data2 = await codeSession.sendMessage(message);
           const newdata = data2.response.text();
@@ -89,6 +93,7 @@ export default function Workspace() {
     }
   };
 
+  //if last message roel is user then call handle message
   React.useEffect(() => {
     if (Message.length > 0 && Message[Message.length - 1].role === "user") {
       HandleMessage();
@@ -96,6 +101,7 @@ export default function Workspace() {
     }
   }, [Message]);
 
+  // will update message state
   const HandleUpdate = async () => {
     setMessage((prev) => [...prev, { role: "user", content: text }]);
     setText("");
