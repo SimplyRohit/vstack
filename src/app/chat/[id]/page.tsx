@@ -1,5 +1,4 @@
 "use client";
-import { GetAiCode, GetAiMessage } from "@/actions/GetAi";
 import ChatView from "@/components/ChatView";
 import EditorView from "@/components/EditorView";
 import { FileStructure, Message } from "@/lib/Types";
@@ -11,6 +10,8 @@ import { GetChat, UpdateChat } from "@/actions/GetChat";
 import { Loader } from "lucide-react";
 import { GetTokens } from "@/actions/GetUser";
 import toast from "react-hot-toast";
+import { codeSession } from "@/service/Ai";
+import { GetAiMessage } from "@/actions/GetAi";
 
 export default function Workspace() {
   const { UserMessage } = React.useContext(UserMessageContext);
@@ -21,11 +22,12 @@ export default function Workspace() {
   const [files, setFiles] = React.useState<FileStructure>({
     ...Default_File,
   });
+
   const [codeLoading, setCodeLoading] = React.useState<boolean>(false);
   const [pageLoading, setPageLoading] = React.useState<boolean>(true);
   const [animation, setAnimation] = React.useState<boolean>(false);
   const notify = () => toast("You have no tokens left");
-  console.log(UserMessage);
+
   const CheckChat = async () => {
     const data = await GetChat({ chatid, UserMessage });
     if (data.status === 200) {
@@ -66,10 +68,10 @@ export default function Workspace() {
       if (data1.status === 200) {
         setMessage((prev) => [...prev, aiMessage]);
         const message = userChat + "" + Code_Gen_Prompt;
-        const data2 = await GetAiCode(message);
-
-        if (data2.status === 200) {
-          const parsedfile = JSON.parse(data2.content);
+        try {
+          const data2 = await codeSession.sendMessage(message);
+          const newdata = data2.response.text();
+          const parsedfile = JSON.parse(newdata);
           const files = parsedfile.files as FileStructure;
           const merge = {
             ...Default_File,
@@ -78,9 +80,11 @@ export default function Workspace() {
           setFiles(merge);
           setCodeLoading(false);
           HandleUpdateChat(chatid, newMessage as [], files);
+        } catch (error) {
+          console.log(error);
+          return setCodeLoading(false);
         }
       }
-
       setCodeLoading(false);
     }
   };
