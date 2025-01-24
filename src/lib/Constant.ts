@@ -89,20 +89,21 @@ export const Chat_Prompt = dedent`
 `;
 
 export const Code_Gen_Prompt = dedent`
-make response in only 5 sec
 Generate a Project in React. Create multiple components, organizing them in separate folders with filenames using the .js extension, if needed. The output should use Tailwind CSS for styling, 
 without any third-party dependencies or libraries, except for icons from the lucide-react library, which should only be used when necessary. Available icons include: Heart, Shield, Clock, Users, Play, Home, Search, Menu, User, Settings, Mail, Bell, Calendar, Star, Upload, Download, Trash, Edit, Plus, Minus, Check, X, and ArrowRight. For example, you can import an icon as import { Heart } from "lucide-react" and use it in JSX as <Heart className="" />.
 also you can use date-fns for date format and react-chartjs-2 chart, graph library
 
 Return the response in JSON format with the following schema:
 {
- 
+  "projectTitle": "",
+  "explanation": "",
   "files": {
     "/App.js": {
       "code": ""
     },
     ...
   },
+  "generatedFiles": []
 }
 
 Here’s the reformatted and improved version of your prompt:
@@ -114,13 +115,15 @@ Return the response in JSON format with the following schema:
 json
 Copy code
 {
-
+  "projectTitle": "",
+  "explanation": "",
   "files": {
     "/App.js": {
       "code": ""
     },
     ...
   },
+  "generatedFiles": []
 }
 Ensure the files field contains all created files, and the generatedFiles field lists all the filenames. Each file's code should be included in the code field, following this example:
 files:{
@@ -128,6 +131,7 @@ files:{
     "code": "import React from 'react';\nimport './styles.css';\nexport default function App() {\n  return (\n    <div className='p-4 bg-gray-100 text-center'>\n      <h1 className='text-2xl font-bold text-blue-500'>Hello, Tailwind CSS with Sandpack!</h1>\n      <p className='mt-2 text-gray-700'>This is a live code editor.</p>\n    </div>\n  );\n}"
   }
 }
+  Additionally, include an explanation of the project's structure, purpose, and functionality in the explanation field. Make the response concise and clear in one paragraph.
   - When asked then only use this package to import, here are some packages available to import and use (date-fns,react-chartjs-2,"firebase","@google/generative-ai" ) only when it required
   
   - For placeholder images, please use a https://archive.org/download/placeholder-image/placeholder-image.jpg
