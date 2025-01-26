@@ -42,12 +42,10 @@ export default function Pricing() {
   ) : (
     <div className="flex min-h-[calc(100vh-95px)] w-full items-center justify-center">
       <div className="flex h-full w-full flex-col">
-        <div className="flex w-full items-center justify-center px-6 py-4 md:pb-10 md:pt-[4.5rem]">
-          <span className="mb-1 mt-1 text-2xl font-semibold md:mb-0 md:mt-0 md:text-3xl">
-            Buy tokens
-          </span>
+        <div className="flex w-full items-center justify-center px-6 py-4">
+          <span className="mb-1 mt-1 text-2xl font-semibold">Buy tokens</span>
         </div>
-        <div className="mb-3 flex justify-center md:mb-6">
+        <div className="mb-3 flex justify-center">
           <div className="w-[fit-content]">
             <div className="cursor-pointer select-none rounded-full border border-solid p-0.5 outline-none">
               <div className="relative grid grid-cols-2">
@@ -61,11 +59,11 @@ export default function Pricing() {
             </div>
           </div>
         </div>
-        <div className="flex flex-col justify-center gap-4 px-3 py-3 md:min-h-[30rem] md:flex-row md:gap-0 md:py-0">
+        <div className="flex flex-col justify-center gap-4 px-3 py-3 lg:flex-row">
           {allBuy.map((item, index) => (
             <div
               key={index}
-              className="flex flex-1 flex-col justify-center gap-5 rounded-xl border border-[#353434] px-6 pb-10 pt-6 text-sm shadow-xl md:min-h-[25rem] md:max-w-96 md:rounded-none md:border-r-0 md:pb-6 md:first:rounded-bl-xl md:first:rounded-tl-xl md:last:rounded-br-xl md:last:rounded-tr-xl md:last:border-r"
+              className="flex flex-1 flex-col justify-center gap-5 rounded-xl border border-[#353434] px-6 pb-10 pt-6 text-sm shadow-xl"
             >
               <div className="flex flex-col">
                 <div className="flex flex-col gap-1">
@@ -88,7 +86,7 @@ export default function Pricing() {
                   </p>
                 </div>
               </div>
-              <div className="mt-10 flex flex-col">
+              <div className="mt-8">
                 <PayPalButtons
                   disabled={!user}
                   onCancel={() => notify()}
@@ -116,10 +114,9 @@ export default function Pricing() {
                     });
                   }}
                   style={{
-                    shape: "rect",
-                    color: "gold",
+                    shape: "pill",
+                    color: "black",
                     layout: "vertical",
-                    label: "pay",
                   }}
                 />
               </div>

@@ -1,3 +1,4 @@
+import { useRef, useEffect } from "react";
 import { Forward, Link2, WandSparkles } from "lucide-react";
 import { Textarea } from "./ui/textarea";
 import { cn } from "@/lib/utils";
@@ -6,6 +7,7 @@ import ReactMarkdown from "react-markdown";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { useSession } from "next-auth/react";
 import TypingAnimation from "@/components/ui/typing-animation";
+
 export default function ChatView({
   codeLoading,
   animation,
@@ -22,10 +24,23 @@ export default function ChatView({
   setText: React.Dispatch<React.SetStateAction<string>>;
 }) {
   const user = useSession().data?.user;
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop =
+        chatContainerRef.current.scrollHeight;
+    }
+  }, [Message]);
+
   return (
-    <div className="mb-[30px] flex h-[calc(100vh-100px)] w-[450px] flex-grow flex-col items-center overflow-y-scroll rounded-xl scrollbar-hide">
-      <div className="mb-[200px] flex w-full flex-col items-center">
+    <div className="flex h-[calc(100vh-100px)] w-[450px] flex-grow flex-col items-center overflow-hidden rounded-xl">
+      <div
+        ref={chatContainerRef}
+        className="mb-[200px] flex w-full flex-col items-center overflow-y-scroll scrollbar-hide"
+      >
         {Message.map((item, index) => {
+          const isLastMessage = index === Message.length - 1;
           return (
             <div
               className={cn(
@@ -47,7 +62,7 @@ export default function ChatView({
                     {item.content}
                   </ReactMarkdown>
                 </>
-              ) : item.role === "assistant" && animation ? (
+              ) : item.role === "assistant" && animation && isLastMessage ? (
                 <TypingAnimation className="p-3 text-base" duration={10}>
                   {item.content}
                 </TypingAnimation>

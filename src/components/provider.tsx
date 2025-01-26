@@ -27,16 +27,6 @@ export default function Provider({ children }: { children: React.ReactNode }) {
     is: false,
   });
 
-  const [isMobile, setIsMobile] = React.useState(false);
-  React.useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-    window.addEventListener("resize", handleResize);
-    handleResize();
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
   return (
     <PayPalScriptProvider
       options={{ clientId: process.env.NEXT_PUBLIC_PAYPAL_KEY_ID! }}
@@ -48,21 +38,17 @@ export default function Provider({ children }: { children: React.ReactNode }) {
           >
             <html lang="en">
               <body className={cn(`${GeistMono.className} antialiased`)}>
-                {isMobile && (
-                  <div className="relative flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-[#141414] via-[#222222] to-[#383737]">
-                    <h1>Not available for mobile devices</h1>
-                  </div>
-                )}
-                {!isMobile && (
-                  <div className="relative flex min-h-screen flex-col bg-gradient-to-br from-[#141414] via-[#222222] to-[#383737]">
-                    <Toaster position="top-center" reverseOrder={false} />
-                    {accountBilling.is && <AccountBilling />}
-                    <MainNavBar />
-                    <MainSidebar />
-                    {children}
-                    {!pathname.startsWith("/chat") && <BottomBar />}
-                  </div>
-                )}
+                <div className="relative flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-[#141414] via-[#222222] to-[#383737] md:hidden">
+                  <h1>Not available for mobile devices</h1>
+                </div>
+                <div className="relative hidden min-h-screen flex-col bg-gradient-to-br from-[#141414] via-[#222222] to-[#383737] md:flex">
+                  <Toaster position="top-center" reverseOrder={false} />
+                  {accountBilling.is && <AccountBilling />}
+                  <MainNavBar />
+                  {!pathname.startsWith("/tokens") && <MainSidebar />}
+                  {children}
+                  {!pathname.startsWith("/chat") && <BottomBar />}
+                </div>
               </body>
             </html>
           </AccountBillingContext.Provider>

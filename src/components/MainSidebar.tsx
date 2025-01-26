@@ -68,14 +68,15 @@ export default function MainSidebar() {
           ) : (
             chats.slice(0, 8).map((item, index) => (
               <div
-                onClick={() => router.push(`/chat/${item.chatid}`)}
                 key={index}
                 className="my-1 flex items-center justify-between p-1 text-sm font-bold hover:bg-[#3d3d3d] hover:text-white active:bg-[#3d3d3d] active:text-white"
               >
-                <span>{item.chatid}</span>
+                <span onClick={() => router.push(`/chat/${item.chatid}`)}>
+                  {item.chatid}
+                </span>
                 <Trash
                   onClick={() => handleDelete(item.chatid)}
-                  className="mr-2 h-5 w-5 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90"
+                  className="z-10 mr-2 h-5 w-5 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90"
                 />
               </div>
             ))

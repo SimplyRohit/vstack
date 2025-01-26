@@ -22,7 +22,6 @@ export default function Workspace() {
   const [files, setFiles] = React.useState<FileStructure>({
     ...Default_File,
   });
-
   const [codeLoading, setCodeLoading] = React.useState<boolean>(false);
   const [pageLoading, setPageLoading] = React.useState<boolean>(true);
   const [animation, setAnimation] = React.useState<boolean>(false);
