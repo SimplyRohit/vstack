@@ -7,6 +7,7 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "vstack",
+  icons: "/icon.png",
 };
 export default function RootLayout({
   children,
