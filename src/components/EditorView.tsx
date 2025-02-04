@@ -5,20 +5,24 @@ import {
   SandpackLayout,
   SandpackCodeEditor,
   SandpackFileExplorer,
+  // SandpackPredefinedTemplate,
 } from "@codesandbox/sandpack-react";
-import { Dependency } from "@/lib/Constant";
+import { React_Dependency } from "@/lib/Constant";
 import { cn } from "@/lib/utils";
 import EditorSandpack from "./EditorSandpack";
 import { Loader } from "lucide-react";
 import { FileStructure } from "@/lib/Types";
 
 export default function EditorView({
+  template,
   files,
   codeLoading,
 }: {
+  template: string;
   files: FileStructure;
   codeLoading: boolean;
 }) {
+  console.log(template);
   const [Active, setActive] = React.useState<string>("code");
   React.useEffect(() => {
     if (codeLoading) {
@@ -59,7 +63,7 @@ export default function EditorView({
         files={files}
         customSetup={{
           dependencies: {
-            ...Dependency,
+            ...React_Dependency,
           },
         }}
         theme={"dark"}

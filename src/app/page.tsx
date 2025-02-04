@@ -5,13 +5,15 @@ import { UserMessageContext } from "@/lib/Context";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Textarea } from "@/components/ui/textarea";
-import { Link2, WandSparkles, Forward } from "lucide-react";
+import { Forward } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Suggestions } from "@/lib/Constant";
 import { Cover } from "@/components/ui/cover";
 import Stacks from "@/components/stacks";
+import toast from "react-hot-toast";
 
 export default function Home() {
+  // const { setTemplate } = React.useContext(TemplateContext);
   const { SetUserMessage } = React.useContext(UserMessageContext);
   const router = useRouter();
   const session = useSession();
@@ -38,6 +40,18 @@ export default function Home() {
     router.push(`/chat/${chatid}`);
   };
 
+  const handleStacks = async (template: string) => {
+    if (!user) {
+      signIn();
+      return;
+    }
+    toast("coming soon");
+    console.log(template);
+    // const chatid = Math.random().toString(36).slice(2);
+    // setTemplate(template);
+    // router.push(`/chat/${chatid}`);
+  };
+
   return (
     <div className="flex h-full w-full flex-grow flex-col items-center justify-center">
       <h1 className="align-middle text-3xl">
@@ -55,17 +69,9 @@ export default function Home() {
           className="h-full w-full resize-none border-none font-bold focus-visible:ring-0"
         />
         <div className="flex h-[50px] w-full flex-grow items-center justify-between">
-          <div className="flex items-center">
+          {/* <div className="flex items-center">
             <Link2 className="ml-3 -rotate-45 cursor-pointer opacity-80"></Link2>
-            <WandSparkles
-              className={cn(
-                text.length === 0
-                  ? "cursor-not-allowed opacity-50"
-                  : "cursor-pointer opacity-80",
-                "ml-2 mr-3 w-5",
-              )}
-            ></WandSparkles>
-          </div>
+          </div> */}
           <div className="flex flex-grow"></div>
           <div className="mr-3 flex items-center justify-center">
             <div
@@ -88,7 +94,7 @@ export default function Home() {
           </p>
         ))}
       </div>
-      <Stacks />
+      <Stacks handleStacks={handleStacks} />
     </div>
   );
 }

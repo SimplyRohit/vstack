@@ -1,5 +1,5 @@
 import { useRef, useEffect } from "react";
-import { Forward, Link2, WandSparkles } from "lucide-react";
+import { Forward } from "lucide-react";
 import { Textarea } from "./ui/textarea";
 import { cn } from "@/lib/utils";
 import { Message } from "@/lib/Types";
@@ -87,7 +87,7 @@ export default function ChatView({
           className="h-full w-full resize-none border-none font-bold focus-visible:ring-0"
         />
         <div className="flex h-[50px] w-full flex-grow items-center justify-between">
-          <div className="flex items-center">
+          {/* <div className="flex items-center">
             <Link2 className="ml-3 -rotate-45 cursor-pointer opacity-80"></Link2>
             <WandSparkles
               className={cn(
@@ -97,7 +97,7 @@ export default function ChatView({
                 "ml-2 mr-3 w-5",
               )}
             ></WandSparkles>
-          </div>
+          </div> */}
           <div className="flex flex-grow"></div>
           <div className="mr-3 flex items-center justify-center">
             <div

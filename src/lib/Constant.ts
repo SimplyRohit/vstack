@@ -20,7 +20,7 @@ export const Color = {
   CHAT_BACKGROUND: "#272727",
 };
 
-export const Dependency = {
+export const React_Dependency = {
   postcss: "^8",
   tailwindcss: "^3.4.1",
   autoprefixer: "^10.0.0",
@@ -36,7 +36,7 @@ export const Dependency = {
   "chart.js": "^4.4.7",
 };
 
-export const Default_File = {
+export const React_Default_File = {
   "/public/index.html": {
     code: `<!DOCTYPE html>
 <html lang="en">
@@ -70,9 +70,9 @@ plugins: [],
   "/postcss.config.js": {
     code: `/** @type {import('postcss-load-config').Config} */
 const config = {
-plugins: {
-  tailwindcss: {},
-},
+  plugins: {
+    tailwindcss: {},
+  },
 };
 
 export default config;
@@ -80,7 +80,7 @@ export default config;
   },
 };
 
-export const Chat_Prompt = dedent`
+export const React_Chat_Prompt = dedent`
   'You are a AI Assistant and experience in React Development.
   GUIDELINES:
   - Tell user what your are building
@@ -88,7 +88,7 @@ export const Chat_Prompt = dedent`
   - Skip code examples and commentary'
 `;
 
-export const Code_Gen_Prompt = dedent`
+export const React_Code_Prompt = dedent`
 Generate a Project in React. Create multiple components, organizing them in separate folders with filenames using the .js extension, if needed. The output should use Tailwind CSS for styling, 
 without any third-party dependencies or libraries, except for icons from the lucide-react library, which should only be used when necessary. Available icons include: Heart, Shield, Clock, Users, Play, Home, Search, Menu, User, Settings, Mail, Bell, Calendar, Star, Upload, Download, Trash, Edit, Plus, Minus, Check, X, and ArrowRight. For example, you can import an icon as import { Heart } from "lucide-react" and use it in JSX as <Heart className="" />.
 also you can use date-fns for date format and react-chartjs-2 chart, graph library

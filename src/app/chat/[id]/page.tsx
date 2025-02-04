@@ -4,8 +4,12 @@ import EditorView from "@/components/EditorView";
 import { FileStructure, Message } from "@/lib/Types";
 import { useParams } from "next/navigation";
 import React from "react";
-import { Chat_Prompt, Code_Gen_Prompt, Default_File } from "@/lib/Constant";
-import { UserMessageContext } from "@/lib/Context";
+import {
+  React_Chat_Prompt,
+  React_Code_Prompt,
+  React_Default_File,
+} from "@/lib/Constant";
+import { TemplateContext, UserMessageContext } from "@/lib/Context";
 import { GetChat, UpdateChat } from "@/actions/GetChat";
 import { Loader } from "lucide-react";
 import { GetTokens } from "@/actions/GetUser";
@@ -20,8 +24,9 @@ export default function Workspace() {
   const chatid = params.id as string;
   const [Message, setMessage] = React.useState<Message[]>([]);
   const [files, setFiles] = React.useState<FileStructure>({
-    ...Default_File,
+    ...React_Default_File,
   });
+  const { template, setTemplate } = React.useContext(TemplateContext);
   const [codeLoading, setCodeLoading] = React.useState<boolean>(false);
   const [pageLoading, setPageLoading] = React.useState<boolean>(true);
   const [animation, setAnimation] = React.useState<boolean>(false);
@@ -29,9 +34,10 @@ export default function Workspace() {
 
   //one time run
   const CheckChat = async () => {
-    const data = await GetChat({ chatid, UserMessage });
+    const data = await GetChat({ chatid, UserMessage, template });
     if (data.status === 200) {
-      setFiles({ ...Default_File, ...(data.files as FileStructure) });
+      setTemplate(data.template!);
+      setFiles({ ...React_Default_File, ...(data.files as FileStructure) });
       setMessage(data.messages as Message[]);
     }
 
@@ -60,7 +66,7 @@ export default function Workspace() {
         return;
       }
       const userChat = Message[Message.length - 1].content;
-      const data1 = await GetAiMessage(userChat + Chat_Prompt);
+      const data1 = await GetAiMessage(userChat + React_Chat_Prompt);
       const aiMessage = {
         role: "assistant",
         content: data1.content,
@@ -68,7 +74,7 @@ export default function Workspace() {
       const newMessage = [...Message, aiMessage];
       if (data1.status === 200) {
         setMessage((prev) => [...prev, aiMessage]);
-        const message = userChat + "" + Code_Gen_Prompt;
+        const message = userChat + "" + React_Code_Prompt;
 
         //doing this bcz of vercel function time out error
         try {
@@ -77,7 +83,7 @@ export default function Workspace() {
           const parsedfile = JSON.parse(newdata);
           const files = parsedfile.files as FileStructure;
           const merge = {
-            ...Default_File,
+            ...React_Default_File,
             ...files,
           };
           setFiles(merge);
@@ -120,7 +126,11 @@ export default function Workspace() {
             setText={setText}
             animation={animation}
           />
-          <EditorView files={files} codeLoading={codeLoading} />
+          <EditorView
+            files={files}
+            codeLoading={codeLoading}
+            template={template}
+          />
         </>
       )}
     </div>

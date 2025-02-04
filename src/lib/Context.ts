@@ -27,3 +27,11 @@ export const AccountBillingContext = React.createContext<{
   accountBilling: { accountBillingType: "", is: false },
   setaccountBilling: () => {},
 });
+
+export const TemplateContext = React.createContext<{
+  template: string;
+  setTemplate: React.Dispatch<React.SetStateAction<string>>;
+}>({
+  template: "",
+  setTemplate: () => {},
+});

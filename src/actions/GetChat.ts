@@ -8,9 +8,11 @@ import { FileStructure } from "@/lib/Types";
 export async function GetChat({
   chatid,
   UserMessage,
+  template,
 }: {
   chatid: string;
   UserMessage: string;
+  template: string;
 }) {
   const currentUser = await auth();
   const user = currentUser?.user;
@@ -32,11 +34,13 @@ export async function GetChat({
           userid: user.id as string,
           files: {},
           messages: [],
+          template,
         });
         return {
           status: 200,
           messages: [],
           files: {},
+          template,
         };
       }
       await db.insert(Chats).values({
@@ -49,6 +53,7 @@ export async function GetChat({
           },
         ],
         files: {},
+        template,
       });
       return {
         status: 200,
@@ -59,12 +64,14 @@ export async function GetChat({
           },
         ],
         files: {},
+        template,
       };
     }
     return {
       status: 200,
       messages: existingChat.messages,
       files: existingChat.files,
+      template: existingChat.template,
     };
   } catch (error) {
     console.log(error);

@@ -6,6 +6,7 @@ import React from "react";
 import {
   AccountBillingContext,
   SandBoxContext,
+  TemplateContext,
   UserMessageContext,
 } from "@/lib/Context";
 import MainNavBar from "@/components/MainNavBar";
@@ -26,34 +27,36 @@ export default function Provider({ children }: { children: React.ReactNode }) {
     accountBillingType: "",
     is: false,
   });
-
+  const [template, setTemplate] = React.useState<string>("react");
   return (
     <PayPalScriptProvider
       options={{ clientId: process.env.NEXT_PUBLIC_PAYPAL_KEY_ID! }}
     >
-      <UserMessageContext.Provider value={{ UserMessage, SetUserMessage }}>
-        <SandBoxContext.Provider value={{ sandBox, setsandBox }}>
-          <AccountBillingContext.Provider
-            value={{ accountBilling, setaccountBilling }}
-          >
-            <html lang="en">
-              <body className={cn(`${GeistMono.className} antialiased`)}>
-                <div className="relative flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-[#141414] via-[#222222] to-[#383737] md:hidden">
-                  <h1>Not available for mobile devices</h1>
-                </div>
-                <div className="relative hidden min-h-screen flex-col bg-gradient-to-br from-[#141414] via-[#222222] to-[#383737] md:flex">
-                  <Toaster position="top-center" reverseOrder={false} />
-                  {accountBilling.is && <AccountBilling />}
-                  <MainNavBar />
-                  {!pathname.startsWith("/tokens") && <MainSidebar />}
-                  {children}
-                  {!pathname.startsWith("/chat") && <BottomBar />}
-                </div>
-              </body>
-            </html>
-          </AccountBillingContext.Provider>
-        </SandBoxContext.Provider>
-      </UserMessageContext.Provider>
+      <TemplateContext.Provider value={{ template, setTemplate }}>
+        <UserMessageContext.Provider value={{ UserMessage, SetUserMessage }}>
+          <SandBoxContext.Provider value={{ sandBox, setsandBox }}>
+            <AccountBillingContext.Provider
+              value={{ accountBilling, setaccountBilling }}
+            >
+              <html lang="en">
+                <body className={cn(`${GeistMono.className} antialiased`)}>
+                  <div className="relative flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-[#141414] via-[#222222] to-[#383737] md:hidden">
+                    <h1>Not available for mobile devices</h1>
+                  </div>
+                  <div className="relative hidden min-h-screen flex-col bg-gradient-to-br from-[#141414] via-[#222222] to-[#383737] md:flex">
+                    <Toaster position="top-center" reverseOrder={false} />
+                    {accountBilling.is && <AccountBilling />}
+                    <MainNavBar />
+                    {!pathname.startsWith("/tokens") && <MainSidebar />}
+                    {children}
+                    {!pathname.startsWith("/chat") && <BottomBar />}
+                  </div>
+                </body>
+              </html>
+            </AccountBillingContext.Provider>
+          </SandBoxContext.Provider>
+        </UserMessageContext.Provider>
+      </TemplateContext.Provider>
     </PayPalScriptProvider>
   );
 }

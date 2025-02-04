@@ -23,6 +23,7 @@ export const Chats = pgTable("chats", {
   chatid: varchar("chat_id", { length: 30 }).notNull().unique(),
   files: jsonb("files"),
   messages: jsonb("messages").array(),
+  template: varchar("template", { length: 15 }).notNull().default("react"),
 });
 
 export const Transaction = pgTable("transction", {
