@@ -1,5 +1,6 @@
 import NextAuth from "next-auth";
 import authConfig from "./auth.config";
+import { GetUser } from "@/actions/GetUser";
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
   session: { strategy: "jwt" },
@@ -8,7 +9,17 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
   trustHost: true,
 
   callbacks: {
-    async signIn() {
+    async signIn({ account, user }) {
+      const User = {
+        email: user?.email as string,
+        name: user?.name as string,
+        image: user?.image as string,
+        id: `user-${account?.providerAccountId}`,
+      };
+      const verify = await GetUser(User);
+      if (verify === 400 || verify === 401) {
+        return false;
+      }
       return true;
     },
 
@@ -25,7 +36,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     },
 
     async redirect({ baseUrl }) {
-      return baseUrl + "/verify";
+      return baseUrl;
     },
   },
 });

@@ -3,34 +3,31 @@ import { eq } from "drizzle-orm";
 import { db } from "@/service/Database/index";
 import { Users } from "@/service/Database/schema";
 import { auth } from "@/service/Auth/auth";
+import { User } from "@/lib/Types";
 
 ///////////////////////////////////////////////////////////////////////////
-export async function GetUser() {
-  const currentUser = await auth();
-  const user = currentUser?.user;
+export async function GetUser(User: User) {
   try {
-    if (!user) {
-      return { status: 400 };
+    if (!User) {
+      return 400;
     }
-
     const exitinguser = await db
       .select()
       .from(Users)
-      .where(eq(Users.userid, currentUser?.user?.id as string));
-    console.log(exitinguser);
+      .where(eq(Users.userid, User.id as string));
     if (exitinguser.length === 0) {
       await db.insert(Users).values({
-        email: user.email as string,
-        userid: currentUser?.user?.id as string,
-        name: user.name,
-        image: user.image,
+        email: User.email as string,
+        userid: User.id as string,
+        name: User.name,
+        image: User.image,
       });
-      return { status: 201 };
+      return 201;
     }
-    return { exitinguser, status: 200 };
+    return 200;
   } catch (error) {
     console.log(error);
-    return { error, status: 401 };
+    return 401;
   }
 }
 
