@@ -1,50 +1,32 @@
 "use server";
 import { eq } from "drizzle-orm";
 import { db } from "@/service/Database/index";
-import { Users } from "@/service/Database/schema";
+import { user as userTable } from "@/service/Database/schema";
 import { auth } from "@/service/Auth/auth";
 import { User } from "@/lib/Types";
+import { headers } from "next/headers";
 
-///////////////////////////////////////////////////////////////////////////
-export async function GetUser(User: User) {
-  try {
-    if (!User) {
-      return 400;
-    }
-    const exitinguser = await db
-      .select()
-      .from(Users)
-      .where(eq(Users.userid, User.id as string));
-    if (exitinguser.length === 0) {
-      await db.insert(Users).values({
-        email: User.email as string,
-        userid: User.id as string,
-        name: User.name,
-        image: User.image,
-      });
-      return 201;
-    }
-    return 200;
-  } catch (error) {
-    console.log(error);
-    return 401;
-  }
-}
 
-///////////////////////////////////////////////////////////////////////////
 
 export async function GetTokens() {
-  const currentUser = await auth();
-  const user = currentUser?.user;
+  const session = await auth.api.getSession({
+    headers: await headers()
+  })
+
+  const user = session?.user;
   try {
     if (!user) {
       return { status: 400 };
     }
 
     const exitingtokens = await db
-      .select({ tokens: Users.tokens })
-      .from(Users)
-      .where(eq(Users.userid, currentUser?.user?.id as string));
+      .select({ tokens: userTable.tokens })
+      .from(userTable)
+      .where(eq(userTable.id, user.id as string));
+
+    if (exitingtokens.length === 0) {
+      return { tokens: 0, status: 200 };
+    }
 
     return { tokens: exitingtokens[0].tokens, status: 200 };
   } catch (error) {

@@ -9,19 +9,21 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { signOut, useSession } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import { AccountBillingContext, SandBoxContext } from "@/lib/Context";
 import React from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 export default function NavbarAvatar() {
   const { setaccountBilling } = React.useContext(AccountBillingContext);
+  const router = useRouter();
 
   const { setsandBox } = React.useContext(SandBoxContext);
   const pathname = usePathname();
-  const session = useSession();
-  const user = session.data?.user;
+  const { data: session } = useSession();
+  const user = session?.user;
+
   const handleSandbox = (sandBox: string) => {
     setsandBox({
       sandBoxType: sandBox,
@@ -54,7 +56,7 @@ export default function NavbarAvatar() {
       )}
       {!user ? (
         <Button
-          onClick={() => signIn()}
+          onClick={() => router.push("/sign-in")}
           size={"default"}
           variant="secondary"
           className={cn("mr-6 mt-2 rounded-[3px]")}

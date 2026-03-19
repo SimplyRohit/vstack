@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { Message } from "@/lib/Types";
 import ReactMarkdown from "react-markdown";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { useSession } from "next-auth/react";
+import { useSession } from "@/lib/auth-client";
 import TypingAnimation from "@/components/ui/typing-animation";
 
 export default function ChatView({
@@ -23,7 +23,8 @@ export default function ChatView({
   text: string;
   setText: React.Dispatch<React.SetStateAction<string>>;
 }) {
-  const user = useSession().data?.user;
+  const { data: session } = useSession();
+  const user = session?.user;
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -58,18 +59,22 @@ export default function ChatView({
                     />
                     <AvatarFallback>CN</AvatarFallback>
                   </Avatar>
-                  <ReactMarkdown className="p-3 text-[1.1]">
-                    {item.content}
-                  </ReactMarkdown>
+                  <div className="p-3 text-[1.1]">
+                    <ReactMarkdown>
+                      {item.content}
+                    </ReactMarkdown>
+                  </div>
                 </>
               ) : item.role === "assistant" && animation && isLastMessage ? (
                 <TypingAnimation className="p-3 text-base" duration={10}>
                   {item.content}
                 </TypingAnimation>
               ) : (
-                <ReactMarkdown className="p-3 text-base">
-                  {item.content}
-                </ReactMarkdown>
+                <div className="p-3 text-base">
+                  <ReactMarkdown>
+                    {item.content}
+                  </ReactMarkdown>
+                </div>
               )}
             </div>
           );

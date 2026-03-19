@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight, Loader, Trash } from "lucide-react";
 import React, { useEffect } from "react";
 import { motion } from "framer-motion";
 import { Button } from "./ui/button";
-import { useSession } from "next-auth/react";
+import { useSession } from "@/lib/auth-client";
 import { DeleteChat, getAllChats } from "@/actions/GetChat";
 import { useRouter } from "next/navigation";
 type Chats = {
@@ -12,7 +12,8 @@ type Chats = {
 export default function MainSidebar() {
   const [chats, setChats] = React.useState<Chats>([]);
   const [open, setOpen] = React.useState(false);
-  const user = useSession().data?.user;
+  const { data: session } = useSession();
+  const user = session?.user;
   const router = useRouter();
   const [chatLoading, setChatLoading] = React.useState(false);
 

@@ -1,8 +1,9 @@
 "use server";
 import { eq, sql } from "drizzle-orm";
 import { db } from "@/service/Database/index";
-import { Transaction, Users } from "@/service/Database/schema";
+import { Transaction, user as userTable } from "@/service/Database/schema";
 import { auth } from "@/service/Auth/auth";
+import { headers } from "next/headers";
 
 export async function updateTokens({
   tokens,
@@ -15,8 +16,11 @@ export async function updateTokens({
   paymentId: string;
   payerId: string;
 }) {
-  const currentUser = await auth();
-  const user = currentUser?.user;
+  const session = await auth.api.getSession({
+    headers: await headers()
+  })
+
+  const user = session?.user;
   try {
     if (!user) {
       return { status: 400, error: "User not authenticated" };
@@ -32,11 +36,11 @@ export async function updateTokens({
       });
 
       await tx
-        .update(Users)
+        .update(userTable)
         .set({
-          tokens: sql`${Users.tokens} + ${tokens}`,
+          tokens: sql`${userTable.tokens} + ${tokens}`,
         })
-        .where(eq(Users.userid, user.id as string));
+        .where(eq(userTable.id, user.id as string));
     });
     return {
       status: 200,

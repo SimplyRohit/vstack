@@ -1,42 +1,34 @@
-import NextAuth from "next-auth";
-import authConfig from "./auth.config";
-import { GetUser } from "@/actions/GetUser";
+import { betterAuth } from "better-auth";
+import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { db } from "../Database";
 
-export const { auth, handlers, signIn, signOut } = NextAuth({
-  session: { strategy: "jwt" },
-  ...authConfig,
-  secret: process.env.NEXTAUTH_SECRET!,
-  trustHost: true,
-
-  callbacks: {
-    async signIn({ account, user }) {
-      const User = {
-        email: user?.email as string,
-        name: user?.name as string,
-        image: user?.image as string,
-        id: `user-${account?.providerAccountId}`,
-      };
-      const verify = await GetUser(User);
-      if (verify === 400 || verify === 401) {
-        return false;
-      }
-      return true;
+export const auth = betterAuth({
+  database: drizzleAdapter(db, {
+    provider: "pg",
+  }),
+  user: {
+    additionalFields: {
+      userRole: {
+        type: "string",
+        defaultValue: "user",
+      },
+      tokens: {
+        type: "number",
+        defaultValue: 20,
+      },
     },
-
-    async jwt({ token, user, account }) {
-      if (user) {
-        token.id = `user-${account?.providerAccountId}`;
-      }
-      return token;
+  },
+  emailAndPassword: {
+    enabled: false,
+  },
+  socialProviders: {
+    github: {
+      clientId: process.env.GITHUB_ID as string,
+      clientSecret: process.env.GITHUB_SECRET as string,
     },
-
-    async session({ session, token }) {
-      session.user.id = token.id as string;
-      return session;
-    },
-
-    async redirect({ baseUrl }) {
-      return baseUrl;
+    google: {
+      clientId: process.env.GOOGLE_ID as string,
+      clientSecret: process.env.GOOGLE_SECRET as string,
     },
   },
 });

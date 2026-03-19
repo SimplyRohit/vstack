@@ -1,8 +1,7 @@
 "use client";
-import { useSession } from "next-auth/react";
+import { useSession } from "@/lib/auth-client";
 import React from "react";
 import { UserMessageContext } from "@/lib/Context";
-import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Textarea } from "@/components/ui/textarea";
 import { Forward } from "lucide-react";
@@ -21,7 +20,7 @@ export default function Home() {
   const user = session.data?.user;
   const handleSubmit = async () => {
     if (!user) {
-      signIn();
+      router.push("/sign-in");
       return;
     }
     const chatid = Math.random().toString(36).slice(2);
@@ -32,7 +31,7 @@ export default function Home() {
 
   const handleGenerate = async (suggestion: string) => {
     if (!user) {
-      signIn();
+      router.push("/sign-in");
       return;
     }
     const chatid = Math.random().toString(36).slice(2);
@@ -42,7 +41,7 @@ export default function Home() {
 
   const handleStacks = async (template: string) => {
     if (!user) {
-      signIn();
+      router.push("/sign-in");
       return;
     }
     toast("coming soon");

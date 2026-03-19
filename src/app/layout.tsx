@@ -1,9 +1,11 @@
 import "./globals.css";
-import { SessionProvider } from "next-auth/react";
 import React from "react";
-import "./globals.css";
 import Provider from "@/components/provider";
 import { Metadata } from "next";
+import { Geist } from "next/font/google";
+import { cn } from "@/lib/utils";
+
+const geist = Geist({ subsets: ['latin'], variable: '--font-sans' });
 
 export const metadata: Metadata = {
   title: "vstack",
@@ -15,8 +17,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <SessionProvider>
-      <Provider>{children}</Provider>
-    </SessionProvider>
+    <html lang="en">
+      <body className={cn(`${geist.className} antialiased`)}>
+        <Provider>{children}</Provider>
+      </body>
+    </html>
   );
 }

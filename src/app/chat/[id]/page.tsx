@@ -10,12 +10,10 @@ import {
   React_Default_File,
 } from "@/lib/Constant";
 import { TemplateContext, UserMessageContext } from "@/lib/Context";
-import { GetChat, UpdateChat } from "@/actions/GetChat";
+import { GetChat } from "@/actions/GetChat";
 import { Loader } from "lucide-react";
-import { GetTokens } from "@/actions/GetUser";
 import toast from "react-hot-toast";
-import { codeSession } from "@/service/Ai";
-import { GetAiMessage } from "@/actions/GetAi";
+import { ProcessChat } from "@/actions/GetAi";
 
 export default function Workspace() {
   const { UserMessage } = React.useContext(UserMessageContext);
@@ -30,9 +28,8 @@ export default function Workspace() {
   const [codeLoading, setCodeLoading] = React.useState<boolean>(false);
   const [pageLoading, setPageLoading] = React.useState<boolean>(true);
   const [animation, setAnimation] = React.useState<boolean>(false);
-  const notify = () => toast("You have no tokens left");
+  const notify = (msg: string) => toast(msg);
 
-  //one time run
   const CheckChat = async () => {
     const data = await GetChat({ chatid, UserMessage, template });
     if (data.status === 200) {
@@ -48,52 +45,24 @@ export default function Workspace() {
     CheckChat();
   }, []);
 
-  //update chat files and messages
-  const HandleUpdateChat = async (
-    chatid: string,
-    newMessage: Message[],
-    files: FileStructure,
-  ) => {
-    await UpdateChat(chatid, newMessage as [], files as FileStructure);
-  };
   const HandleMessage = async () => {
     setCodeLoading(true);
-    const status = await GetTokens();
-    if (status.status === 200) {
-      if (status.tokens! <= 0 || status.tokens === undefined) {
-        notify();
-        setCodeLoading(false);
-        return;
-      }
-      const userChat = Message[Message.length - 1].content;
-      const data1 = await GetAiMessage(userChat + React_Chat_Prompt);
-      const aiMessage = {
-        role: "assistant",
-        content: data1.content,
-      };
-      const newMessage = [...Message, aiMessage];
-      if (data1.status === 200) {
-        setMessage((prev) => [...prev, aiMessage]);
-        const message = userChat + "" + React_Code_Prompt;
+    try {
+      const response = await ProcessChat({
+        chatid,
+        messages: Message,
+      });
 
-        //doing this bcz of vercel function time out error
-        try {
-          const data2 = await codeSession.sendMessage(message);
-          const newdata = data2.response.text();
-          const parsedfile = JSON.parse(newdata);
-          const files = parsedfile.files as FileStructure;
-          const merge = {
-            ...React_Default_File,
-            ...files,
-          };
-          setFiles(merge);
-          setCodeLoading(false);
-          HandleUpdateChat(chatid, newMessage as [], files);
-        } catch (error) {
-          console.log(error);
-          return setCodeLoading(false);
-        }
+      if (response.status === 200) {
+        setMessage(response.messages!);
+        setFiles({ ...React_Default_File, ...response.files });
+      } else {
+        notify(response.error || "An error occurred");
       }
+    } catch (error) {
+      console.error("Error in HandleMessage:", error);
+      notify("Failed to process chat");
+    } finally {
       setCodeLoading(false);
     }
   };

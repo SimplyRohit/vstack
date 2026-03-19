@@ -4,15 +4,16 @@ import Bottom from "@/components/Bottom";
 import { allBuy } from "@/lib/Constant";
 import { PayPalButtons } from "@paypal/react-paypal-js";
 import { Loader } from "lucide-react";
-import { signIn, useSession } from "next-auth/react";
+import { authClient, signIn } from "@/lib/auth-client";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 export default function Pricing() {
   const notify = () => toast("payment failed");
-  const Session = useSession();
+  const Session = authClient.useSession();
+  const router = useRouter();
   const user = Session.data?.user;
 
-  // on payment success update tokens
   const onPaymentSuccess = async ({
     orderId,
     paymentId,
@@ -25,7 +26,7 @@ export default function Pricing() {
     tokens: number;
   }) => {
     if (!user) {
-      return signIn();
+      return router.push("/sign-in");
     }
     await updateTokens({
       tokens,
@@ -35,7 +36,7 @@ export default function Pricing() {
     });
   };
 
-  return Session.status === "loading" ? (
+  return Session.isPending ? (
     <div className="flex min-h-[calc(100vh-95px)] w-full items-center justify-center">
       <Loader className="animate-spin" />
     </div>
@@ -90,14 +91,14 @@ export default function Pricing() {
                 <PayPalButtons
                   disabled={!user}
                   onCancel={() => notify()}
-                  onApprove={(data) =>
-                    onPaymentSuccess({
+                  onApprove={async (data) => {
+                    await onPaymentSuccess({
                       orderId: data.orderID,
                       paymentId: data.paymentID!,
                       payerId: data.payerID!,
                       tokens: item.tokens,
-                    })
-                  }
+                    });
+                  }}
                   createOrder={(data, actions) => {
                     return actions.order.create({
                       purchase_units: [
