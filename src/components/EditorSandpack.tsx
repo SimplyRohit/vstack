@@ -8,28 +8,36 @@ import { useRouter } from "next/navigation";
 import React from "react";
 
 export default function EditorSandpack() {
-  const { sandBox } = React.useContext(SandBoxContext);
+  const { sandBox, setsandBox } = React.useContext(SandBoxContext);
   const router = useRouter();
   const sandpack = useSandpack();
   const previewRef = React.useRef<SandpackPreviewRef>(null);
+
   React.useEffect(() => {
     const Handle = async () => {
-      const client = previewRef.current?.getClient();
-      // @ts-ignore
-      const result = await client?.getCodeSandboxURL();
-      if (sandBox.sandBoxType == "deploy") {
-        router.push(`https://${result?.sandboxId}.csb.app/`);
-      } else if (sandBox.sandBoxType == "export") {
-        window.open(result.editorUrl);
+      if (!sandBox.sandBoxType) return;
+      
+      setsandBox(prev => ({ ...prev, loading: true }));
+      try {
+        const client = previewRef.current?.getClient();
+        // @ts-ignore
+        const result = await client?.getCodeSandboxURL();
+        if (sandBox.sandBoxType == "deploy") {
+          router.push(`https://${result?.sandboxId}.csb.app/`);
+        } else if (sandBox.sandBoxType == "export") {
+          window.open(result.editorUrl);
+        }
+      } finally {
+        setsandBox(prev => ({ ...prev, loading: false }));
       }
     };
     Handle();
-  }, [sandBox && sandpack, router]);
+  }, [sandBox, sandpack, router]);
 
   return (
     <SandpackPreview
       ref={previewRef}
-      style={{ height: "calc(100vh - 130px)" }}
+      style={{ height: "100%" }}
       showNavigator={true}
     />
   );

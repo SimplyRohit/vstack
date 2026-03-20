@@ -16,6 +16,8 @@ import { GetTokens } from "@/actions/GetUser";
 import toast from "react-hot-toast";
 import { GetAiMessage, GetAiCode } from "@/actions/GetAi";
 
+import { SparklesCore } from "@/components/ui/sparkles";
+
 export default function Workspace() {
   const { UserMessage } = React.useContext(UserMessageContext);
   const [text, setText] = React.useState<string>("");
@@ -116,11 +118,25 @@ export default function Workspace() {
   };
 
   return (
-    <div className="flex h-full w-full flex-grow flex-row items-center justify-center gap-3 p-2">
+    <div className="relative flex h-full w-full flex-grow flex-row items-center justify-center gap-2 overflow-hidden">
+      <div className="absolute inset-0 z-0 h-full w-full opacity-30">
+        <SparklesCore
+          id="tsparticlesworkspace"
+          background="transparent"
+          minSize={0.4}
+          maxSize={1}
+          particleDensity={70}
+          className="h-full w-full"
+          particleColor="#FFFFFF"
+        />
+      </div>
+
       {pageLoading ? (
-        <Loader className="animate-spin" />
+        <div className="flex h-full w-full items-center justify-center relative z-10">
+          <Loader className="animate-spin h-8 w-8 text-blue-500 opacity-50" />
+        </div>
       ) : (
-        <>
+        <div className="relative z-10 flex h-full w-full gap-2 p-2">
           <ChatView
             codeLoading={codeLoading}
             Message={Message}
@@ -134,7 +150,7 @@ export default function Workspace() {
             codeLoading={codeLoading}
             template={template}
           />
-        </>
+        </div>
       )}
     </div>
   );

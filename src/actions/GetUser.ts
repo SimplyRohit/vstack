@@ -51,3 +51,12 @@ export async function GetTokens() {
     return { error, status: 401 };
   }
 }
+
+export async function GetUserId() {
+  const currentUser = await auth();
+  const user = currentUser?.user;
+  if (!user?.id) {
+    return { status: 400, userId: null };
+  }
+  return { status: 200, userId: user.id };
+}

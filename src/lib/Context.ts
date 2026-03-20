@@ -5,17 +5,17 @@ export const UserMessageContext = React.createContext<{
   SetUserMessage: React.Dispatch<React.SetStateAction<string>>;
 }>({
   UserMessage: "",
-  SetUserMessage: () => {},
+  SetUserMessage: () => { },
 });
 
 export const SandBoxContext = React.createContext<{
-  sandBox: { sandBoxType: string; timeStamp: number };
+  sandBox: { sandBoxType: string; timeStamp: number; activeTab: string; loading: boolean };
   setsandBox: React.Dispatch<
-    React.SetStateAction<{ sandBoxType: string; timeStamp: number }>
+    React.SetStateAction<{ sandBoxType: string; timeStamp: number; activeTab: string; loading: boolean }>
   >;
 }>({
-  sandBox: { sandBoxType: "", timeStamp: 0 },
-  setsandBox: () => {},
+  sandBox: { sandBoxType: "", timeStamp: 0, activeTab: "code", loading: false },
+  setsandBox: () => { },
 });
 
 export const AccountBillingContext = React.createContext<{
@@ -25,7 +25,7 @@ export const AccountBillingContext = React.createContext<{
   >;
 }>({
   accountBilling: { accountBillingType: "", is: false },
-  setaccountBilling: () => {},
+  setaccountBilling: () => { },
 });
 
 export const TemplateContext = React.createContext<{
@@ -33,5 +33,5 @@ export const TemplateContext = React.createContext<{
   setTemplate: React.Dispatch<React.SetStateAction<string>>;
 }>({
   template: "",
-  setTemplate: () => {},
+  setTemplate: () => { },
 });

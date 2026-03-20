@@ -121,7 +121,10 @@ export async function getAllChats() {
   }
   try {
     const data = await db
-      .select({ chatid: Chats.chatid })
+      .select({
+        chatid: Chats.chatid,
+        messages: Chats.messages
+      })
       .from(Chats)
       .where(eq(Chats.userid, user.id as string));
 

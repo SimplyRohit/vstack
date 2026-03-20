@@ -7,42 +7,66 @@ function Stacks({
   handleStacks: (template: string) => void;
 }) {
   return (
-    <div className="mt-20 flex h-full w-[500px] flex-col items-center justify-center">
-      <p className="font-bold opacity-50">
-        start a blank app with your favorite stack
-      </p>
-      <div className="mt-3 flex w-[600px] items-center justify-center gap-5">
-        <div onClick={() => handleStacks("angular")}>
-          <Svg.AngularLogo className="h-11 w-11 opacity-50 hover:opacity-100" />
-        </div>
-        <div onClick={() => handleStacks("astro")}>
-          <Svg.AstroLogo className="h-14 w-14 opacity-50 hover:opacity-100" />
-        </div>
-        <div onClick={() => handleStacks("Angular")}>
-          <Svg.NativeLogo className="h-14 w-14 opacity-50 hover:opacity-100" />
-        </div>
-        <div onClick={() => handleStacks("nextjs")}>
-          <Svg.NextLogo className="h-12 w-12 opacity-50 hover:opacity-100" />
-        </div>
-        <div onClick={() => handleStacks("Angular")}>
-          <Svg.NuxtLogo className="h-14 w-14 opacity-50 hover:opacity-100" />
-        </div>
+    <div className=" flex w-full max-w-[550px] flex-col items-center px-4 mx-auto">
+      <div className="flex items-center gap-4 w-full mb-10">
+        <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+        <p className="text-[10px] uppercase tracking-[0.4em] font-bold text-slate-500 whitespace-nowrap opacity-70">
+          Or start with a favorite stack
+        </p>
+        <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
       </div>
-      <div className="mt-3 flex w-[600px] items-center justify-center gap-5">
-        <div onClick={() => handleStacks("vanilla-ts")}>
-          <Svg.TypeScriptLogo className="mb-3 h-14 w-14 opacity-50 hover:opacity-100" />
+
+      <div className="grid w-full grid-cols-5 gap-y-10">
+        <div className="flex items-center justify-center">
+          <button onClick={() => handleStacks("angular")} className="transition-all hover:scale-125 active:scale-95 group">
+            <Svg.AngularLogo className="h-10 w-10 opacity-30 grayscale transition-all group-hover:opacity-100 group-hover:grayscale-0" />
+          </button>
         </div>
-        <div onClick={() => handleStacks("react")}>
-          <Svg.ReactLogo className="h-12 w-12 opacity-50 hover:opacity-100" />
+        <div className="flex items-center justify-center">
+          <button onClick={() => handleStacks("astro")} className="transition-all hover:scale-125 active:scale-95 group">
+            <Svg.AstroLogo className="h-11 w-11 opacity-30 grayscale transition-all group-hover:opacity-100 group-hover:grayscale-0" />
+          </button>
         </div>
-        <div onClick={() => handleStacks("svelte")}>
-          <Svg.SveletLogo className="h-14 w-14 opacity-50 hover:opacity-100" />
+        <div className="flex items-center justify-center">
+          <button onClick={() => handleStacks("react-native")} className="transition-all hover:scale-125 active:scale-95 group">
+            <Svg.NativeLogo className="h-11 w-11 opacity-30 grayscale transition-all group-hover:opacity-100 group-hover:grayscale-0" />
+          </button>
         </div>
-        <div onClick={() => handleStacks("vite")}>
-          <Svg.ViteLogo className="h-12 w-12 opacity-50 hover:opacity-100" />
+        <div className="flex items-center justify-center">
+          <button onClick={() => handleStacks("nextjs")} className="transition-all hover:scale-125 active:scale-95 group">
+            <Svg.NextLogo className="h-10 w-10 opacity-30 grayscale transition-all group-hover:opacity-100 group-hover:grayscale-0" />
+          </button>
         </div>
-        <div onClick={() => handleStacks("vue")}>
-          <Svg.VueLogo className="h-12 w-12 opacity-50 hover:opacity-100" />
+        <div className="flex items-center justify-center">
+          <button onClick={() => handleStacks("nuxt")} className="transition-all hover:scale-125 active:scale-95 group">
+            <Svg.NuxtLogo className="h-11 w-11 opacity-30 grayscale transition-all group-hover:opacity-100 group-hover:grayscale-0" />
+          </button>
+        </div>
+
+        <div className="flex items-center justify-center">
+          <button onClick={() => handleStacks("vanilla-ts")} className="transition-all hover:scale-125 active:scale-95 group">
+            <Svg.TypeScriptLogo className="h-11 w-11 opacity-30 grayscale transition-all group-hover:opacity-100 group-hover:grayscale-0" />
+          </button>
+        </div>
+        <div className="flex items-center justify-center">
+          <button onClick={() => handleStacks("react")} className="transition-all hover:scale-125 active:scale-95 group">
+            <Svg.ReactLogo className="h-10 w-10 opacity-30 grayscale transition-all group-hover:opacity-100 group-hover:grayscale-0" />
+          </button>
+        </div>
+        <div className="flex items-center justify-center">
+          <button onClick={() => handleStacks("svelte")} className="transition-all hover:scale-125 active:scale-95 group">
+            <Svg.SveletLogo className="h-11 w-11 opacity-30 grayscale transition-all group-hover:opacity-100 group-hover:grayscale-0" />
+          </button>
+        </div>
+        <div className="flex items-center justify-center">
+          <button onClick={() => handleStacks("vite")} className="transition-all hover:scale-125 active:scale-95 group">
+            <Svg.ViteLogo className="h-10 w-10 opacity-30 grayscale transition-all group-hover:opacity-100 group-hover:grayscale-0" />
+          </button>
+        </div>
+        <div className="flex items-center justify-center">
+          <button onClick={() => handleStacks("vue")} className="transition-all hover:scale-125 active:scale-95 group">
+            <Svg.VueLogo className="h-10 w-10 opacity-30 grayscale transition-all group-hover:opacity-100 group-hover:grayscale-0" />
+          </button>
         </div>
       </div>
     </div>

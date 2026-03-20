@@ -1,4 +1,4 @@
-import { BadgeCheck, CreditCard, LogOut, Sparkles } from "lucide-react";
+import { BadgeCheck, CreditCard, LogOut, Sparkles, Loader2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
 import {
@@ -10,18 +10,20 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { signIn, signOut, useSession } from "next-auth/react";
-import { cn } from "@/lib/utils";
 import { AccountBillingContext, SandBoxContext } from "@/lib/Context";
 import React from "react";
 import { usePathname } from "next/navigation";
 
+import UserTokens from "./UserTokens";
+
 export default function NavbarAvatar() {
   const { setaccountBilling } = React.useContext(AccountBillingContext);
-
   const { setsandBox } = React.useContext(SandBoxContext);
   const pathname = usePathname();
   const session = useSession();
   const user = session.data?.user;
+  const status = session.status;
+
   const handleSandbox = (sandBox: string) => {
     setsandBox({
       sandBoxType: sandBox,
@@ -29,92 +31,114 @@ export default function NavbarAvatar() {
     });
   };
 
-  return (
-    <div className={cn("flex h-full w-full items-center justify-end gap-3")}>
-      {pathname.startsWith("/chat") && (
-        <>
-          <Button
-            onClick={() => handleSandbox("deploy")}
-            size={"default"}
-            variant="secondary"
-            className={cn("0 rounded-[3px]")}
-          >
-            Deploy
-          </Button>
+  if (status === "loading") {
+    return (
+      <div className="flex items-center justify-end gap-6 px-4 py-2">
+        <div className="h-9 w-9 flex items-center justify-center rounded-full bg-white/5 border border-white/10 animate-pulse">
+          <Loader2 className="h-4 w-4 animate-spin text-slate-500" />
+        </div>
+      </div>
+    );
+  }
 
-          <Button
-            onClick={() => handleSandbox("export")}
-            size={"default"}
-            variant="secondary"
-            className={cn("rounded-[3px]")}
-          >
-            Export
-          </Button>
-        </>
-      )}
+  return (
+    <div className="flex items-center justify-end gap-6 px-4 py-2">
+      <UserTokens />
+
       {!user ? (
         <Button
           onClick={() => signIn()}
-          size={"default"}
+          size="sm"
           variant="secondary"
-          className={cn("mr-6 mt-2 rounded-[3px]")}
+          className="rounded-full bg-blue-600 px-6 font-semibold text-white transition-all hover:bg-blue-700 hover:shadow-[0_0_15px_rgba(37,99,235,0.4)]"
         >
-          Sign-In
+          Sign In
         </Button>
       ) : (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Avatar className="mr-6 mt-2 border border-[#3a3a3a]">
-              <AvatarImage src={user?.image as string} alt={"Avatar"} />
-              <AvatarFallback>CN</AvatarFallback>
-            </Avatar>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            className="min-w-56 rounded-xl border border-[#3a3a3a] bg-transparent backdrop-blur-3xl"
-            side={"left"}
-            align="end"
-            sideOffset={4}
-          >
-            <DropdownMenuGroup>
-              <DropdownMenuItem
-                onClick={() => (window.location.href = "/tokens")}
-              >
-                <Sparkles />
-                Buy Tokens
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem
-                onClick={() =>
-                  setaccountBilling({
-                    accountBillingType: "account",
-                    is: true,
-                  })
-                }
-              >
-                <BadgeCheck />
-                Account
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() =>
-                  setaccountBilling({
-                    accountBillingType: "billing",
-                    is: true,
-                  })
-                }
-              >
-                <CreditCard />
-                Billing
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => signOut()}>
-              <LogOut />
-              Log out
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div className="flex items-center gap-3">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <div className="group cursor-pointer">
+                <Avatar className="h-9 w-9 border border-white/10 ring-2 ring-transparent transition-all group-hover:border-blue-500/50 group-hover:ring-blue-500/20">
+                  <AvatarImage src={user?.image as string} alt={user?.name || "User Avatar"} />
+                  <AvatarFallback className="bg-slate-800 text-xs font-bold text-white uppercase">
+                    {user?.name?.slice(0, 2) || "VS"}
+                  </AvatarFallback>
+                </Avatar>
+              </div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              className="mt-2 min-w-[240px] rounded-2xl border border-white/10 bg-[#0d0d12]/80 p-2 shadow-2xl backdrop-blur-2xl"
+              side="bottom"
+              align="end"
+              sideOffset={8}
+            >
+              <div className="flex items-center gap-3 p-3">
+                <Avatar className="h-10 w-10 border border-white/5">
+                  <AvatarImage src={user?.image as string} />
+                </Avatar>
+                <div className="flex flex-col">
+                  <span className="text-sm font-bold text-white">{user?.name}</span>
+                  <span className="text-[10px] text-slate-500 truncate max-w-[140px]">{user?.email}</span>
+                </div>
+              </div>
+
+              <DropdownMenuSeparator className="bg-white/5" />
+
+              <DropdownMenuGroup className="p-1">
+                <DropdownMenuItem
+                  className="flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2 text-xs font-medium text-slate-300 transition-colors hover:bg-white/5 hover:text-white"
+                  onClick={() => (window.location.href = "/tokens")}
+                >
+                  <Sparkles className="h-4 w-4 text-blue-400" />
+                  <span>Buy Premium Tokens</span>
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+
+              <DropdownMenuSeparator className="bg-white/5" />
+
+              <DropdownMenuGroup className="p-1">
+                <DropdownMenuItem
+                  className="flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2 text-xs font-medium text-slate-300 transition-colors hover:bg-white/5 hover:text-white"
+                  onClick={() =>
+                    setaccountBilling({
+                      accountBillingType: "account",
+                      is: true,
+                    })
+                  }
+                >
+                  <BadgeCheck className="h-4 w-4 text-slate-400" />
+                  <span>Account Settings</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2 text-xs font-medium text-slate-300 transition-colors hover:bg-white/5 hover:text-white"
+                  onClick={() =>
+                    setaccountBilling({
+                      accountBillingType: "billing",
+                      is: true,
+                    })
+                  }
+                >
+                  <CreditCard className="h-4 w-4 text-slate-400" />
+                  <span>Billing & Subscription</span>
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+
+              <DropdownMenuSeparator className="bg-white/5" />
+
+              <div className="p-1">
+                <DropdownMenuItem
+                  className="flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2 text-xs font-medium text-red-400 transition-colors hover:bg-red-500/10 hover:text-red-300"
+                  onClick={() => signOut()}
+                >
+                  <LogOut className="h-4 w-4" />
+                  <span>Log out session</span>
+                </DropdownMenuItem>
+              </div>
+
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       )}
     </div>
   );
