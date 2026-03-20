@@ -6,7 +6,6 @@ import {
   boolean,
   integer,
   index,
-  jsonb,
 } from "drizzle-orm/pg-core";
 
 export const user = pgTable("user", {
@@ -22,24 +21,6 @@ export const user = pgTable("user", {
     .notNull(),
   userRole: text("user_role").default("user"),
   tokens: integer("tokens").default(20),
-});
-export const Transaction = pgTable("transction", {
-  id: text("id").primaryKey(),
-  userid: text("user_id").references(() => user.id),
-  tokenupdated: integer("tokenupdated").notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  orderid: text("order_id").notNull(),
-  paymentid: text("payment_id").notNull(),
-  payerid: text("signature").notNull(),
-});
-
-export const Chats = pgTable("chats", {
-  id: text("id").primaryKey(),
-  userid: text("user_id").references(() => user.id),
-  chatid: text("chat_id").notNull().unique(),
-  files: jsonb("files"),
-  messages: jsonb("messages").array(),
-  template: text("template").notNull().default("react"),
 });
 
 export const session = pgTable(
@@ -104,8 +85,6 @@ export const verification = pgTable(
 export const userRelations = relations(user, ({ many }) => ({
   sessions: many(session),
   accounts: many(account),
-  transactions: many(Transaction),
-  chats: many(Chats),
 }));
 
 export const sessionRelations = relations(session, ({ one }) => ({
@@ -118,20 +97,6 @@ export const sessionRelations = relations(session, ({ one }) => ({
 export const accountRelations = relations(account, ({ one }) => ({
   user: one(user, {
     fields: [account.userId],
-    references: [user.id],
-  }),
-}));
-
-export const transactionRelations = relations(Transaction, ({ one }) => ({
-  user: one(user, {
-    fields: [Transaction.userid],
-    references: [user.id],
-  }),
-}));
-
-export const chatsRelations = relations(Chats, ({ one }) => ({
-  user: one(user, {
-    fields: [Chats.userid],
     references: [user.id],
   }),
 }));

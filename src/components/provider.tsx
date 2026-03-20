@@ -38,10 +38,10 @@ export default function Provider({ children }: { children: React.ReactNode }) {
             <AccountBillingContext.Provider
               value={{ accountBilling, setaccountBilling }}
             >
-              <div className="relative flex min-h-screen flex-col items-center justify-center bg-linear-to-br from-[#141414] via-[#222222] to-[#383737] md:hidden">
+              <div className="relative flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-[#141414] via-[#222222] to-[#383737] md:hidden">
                 <h1>Not available for mobile devices</h1>
               </div>
-              <div className="relative hidden min-h-screen flex-col bg-linear-to-br from-[#141414] via-[#222222] to-[#383737] md:flex">
+              <div className="relative hidden min-h-screen flex-col bg-gradient-to-br from-[#141414] via-[#222222] to-[#383737] md:flex">
                 <Toaster position="top-center" reverseOrder={false} />
                 {accountBilling.is && <AccountBilling />}
                 <MainNavBar />

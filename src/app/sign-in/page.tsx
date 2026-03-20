@@ -9,7 +9,7 @@ export default function SignInPage() {
   const handleSignIn = async (provider: "github" | "google") => {
     await signIn.social({
       provider,
-      callbackURL: "/dashboard",
+      callbackURL: "/",
     });
   };
 
