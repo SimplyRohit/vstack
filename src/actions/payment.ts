@@ -27,11 +27,11 @@ export async function updateTokens({
     }
     await db.transaction(async (tx) => {
       await tx.insert(Transaction).values({
+        id: crypto.randomUUID(),
         orderid: orderId,
         paymentid: paymentId,
         payerid: payerId,
         tokenupdated: tokens,
-        createdAt: new Date().toISOString(),
         userid: user.id,
       });
 

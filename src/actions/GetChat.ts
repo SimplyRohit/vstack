@@ -34,6 +34,7 @@ export async function GetChat({
     if (!existingChat) {
       if (UserMessage === "") {
         await db.insert(Chats).values({
+          id: crypto.randomUUID(),
           chatid,
           userid: user.id as string,
           files: {},
@@ -48,6 +49,7 @@ export async function GetChat({
         };
       }
       await db.insert(Chats).values({
+        id: crypto.randomUUID(),
         chatid,
         userid: user.id as string,
         messages: [

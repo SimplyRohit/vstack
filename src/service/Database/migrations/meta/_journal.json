@@ -5,43 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1737622552668,
-      "tag": "0000_young_doctor_strange",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1738571939495,
-      "tag": "0001_strong_junta",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1773041710169,
-      "tag": "0002_sticky_warbound",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1773974502381,
-      "tag": "0003_panoramic_skaar",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1773975281701,
-      "tag": "0004_red_namora",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "7",
-      "when": 1773975391537,
-      "tag": "0005_late_justin_hammer",
+      "when": 1773975966933,
+      "tag": "0000_dear_bromley",
       "breakpoints": true
     }
   ]

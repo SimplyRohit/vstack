@@ -1,1 +1,0 @@
-ALTER TABLE "chats" ADD COLUMN "template" varchar(15) DEFAULT 'react' NOT NULL;
