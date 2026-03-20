@@ -32,6 +32,8 @@ export const SparklesCore = (props: ParticlesProps) => {
   const [init, setInit] = useState(false);
   useEffect(() => {
     initParticlesEngine(async (engine) => {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       await loadSlim(engine);
     }).then(() => {
       setInit(true);
@@ -57,6 +59,8 @@ export const SparklesCore = (props: ParticlesProps) => {
         <Particles
           id={id || generatedId}
           className={cn("h-full w-full")}
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
           particlesLoaded={particlesLoaded}
           options={{
             background: {
