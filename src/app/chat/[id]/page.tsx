@@ -16,8 +16,6 @@ import { GetTokens } from "@/actions/GetUser";
 import toast from "react-hot-toast";
 import { GetAiMessage, GetAiCode } from "@/actions/GetAi";
 
-import { SparklesCore } from "@/components/ui/sparkles";
-
 export default function Workspace() {
   const { UserMessage } = React.useContext(UserMessageContext);
   const [text, setText] = React.useState<string>("");
@@ -33,8 +31,7 @@ export default function Workspace() {
   const [animation, setAnimation] = React.useState<boolean>(false);
   const notify = () => toast("You have no tokens left");
 
-  //one time run
-  const CheckChat = async () => {
+  const CheckChat = React.useCallback(async () => {
     const data = await GetChat({ chatid, UserMessage, template });
     if (data.status === 200) {
       setTemplate(data.template!);
@@ -43,13 +40,12 @@ export default function Workspace() {
     }
 
     setPageLoading(false);
-  };
+  }, [chatid, UserMessage, template, setTemplate]);
 
   React.useEffect(() => {
     CheckChat();
-  }, []);
+  }, [CheckChat]);
 
-  //update chat files and messages
   const HandleUpdateChat = async (
     chatid: string,
     newMessage: Message[],
@@ -57,7 +53,7 @@ export default function Workspace() {
   ) => {
     await UpdateChat(chatid, newMessage as [], files as FileStructure);
   };
-  const HandleMessage = async () => {
+  const HandleMessage = React.useCallback(async () => {
     setCodeLoading(true);
     const status = await GetTokens();
     if (status.status === 200) {
@@ -77,7 +73,6 @@ export default function Workspace() {
         setMessage((prev) => [...prev, aiMessage]);
         const message = userChat + "" + React_Code_Prompt;
 
-        //doing this bcz of vercel function time out error
         try {
           const data2 = await GetAiCode(message);
           if (data2.status === 200) {
@@ -101,36 +96,22 @@ export default function Workspace() {
       }
       setCodeLoading(false);
     }
-  };
+  }, [Message, chatid]);
 
-  //if last message roel is user then call handle message
   React.useEffect(() => {
     if (Message.length > 0 && Message[Message.length - 1].role === "user") {
       HandleMessage();
       setAnimation(true);
     }
-  }, [Message]);
+  }, [Message, HandleMessage]);
 
-  // will update message state
   const HandleUpdate = async () => {
     setMessage((prev) => [...prev, { role: "user", content: text }]);
     setText("");
   };
 
   return (
-    <div className="relative flex h-full w-full flex-grow flex-row items-center justify-center gap-2 overflow-hidden">
-      <div className="absolute inset-0 z-0 h-full w-full opacity-30">
-        <SparklesCore
-          id="tsparticlesworkspace"
-          background="transparent"
-          minSize={0.4}
-          maxSize={1}
-          particleDensity={70}
-          className="h-full w-full"
-          particleColor="#FFFFFF"
-        />
-      </div>
-
+    <div className="relative flex h-full w-full flex-grow flex-row items-center justify-center gap-2 overflow-hidden px-1">
       {pageLoading ? (
         <div className="flex h-full w-full items-center justify-center relative z-10">
           <Loader className="animate-spin h-8 w-8 text-blue-500 opacity-50" />
@@ -149,6 +130,7 @@ export default function Workspace() {
             files={files}
             codeLoading={codeLoading}
             template={template}
+            Message={Message}
           />
         </div>
       )}

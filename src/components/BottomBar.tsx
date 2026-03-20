@@ -4,21 +4,21 @@ import Link from "next/link";
 
 export default function BottomBar() {
   return (
-    <div className="flex h-14 w-full items-center justify-between border-t border-white/5 bg-[#050507]/80 px-8 backdrop-blur-xl">
-      <div className="flex items-center gap-6">
+    <div className="flex h-12 w-full items-center justify-between bg-transparent px-4">
+      <div className="flex items-center">
         <Link
           href="https://buymeacoffee.com/WasATrueWarrior"
-          className="group flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-slate-500 transition-all hover:text-white"
+          className="group flex items-center gap-2.5 text-xs lowercase tracking-wide text-slate-500 transition-all hover:text-white"
         >
           <Coffee className="h-4 w-4 text-orange-400 opacity-50 group-hover:opacity-100 transition-opacity" />
-          <span>Support the project</span>
+          <span>buy me a coffee</span>
         </Link>
       </div>
 
-      <div className="flex items-center gap-8">
+      <div className="flex items-center gap-6">
         <div className="flex items-center gap-5">
           <Link href="/" target="_blank" className="text-slate-500 hover:text-white transition-colors">
-            <XLogo className="w-4 h-4" />
+            <XLogo className="w-[22px] h-[22px]" />
           </Link>
           <Link href="https://github.com/SimplyRohit" target="_blank" className="text-slate-500 hover:text-white transition-colors">
             <GithubLogo className="w-5 h-5" />
@@ -28,13 +28,13 @@ export default function BottomBar() {
           </Link>
         </div>
 
-        <div className="h-4 w-px bg-white/10" />
+        <div className="text-slate-700 text-lg">·</div>
 
         <Link
           href="#"
-          className="font-syne text-lg font-bold tracking-tighter text-slate-400 hover:text-white transition-all"
+          className="font-syne text-sm font-bold tracking-tighter text-slate-500 hover:text-white transition-all"
         >
-          Vstack <span className="text-blue-500 opacity-50">v1.2.4</span>
+          Vbuilds
         </Link>
       </div>
     </div>

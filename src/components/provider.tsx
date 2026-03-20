@@ -9,6 +9,7 @@ import {
 } from "@/lib/Context";
 import MainNavBar from "@/components/MainNavBar";
 import BottomBar from "@/components/BottomBar";
+import { SparklesCore } from "@/components/ui/sparkles";
 import { usePathname } from "next/navigation";
 import AccountBilling from "@/components/account-billing";
 import { Toaster } from "react-hot-toast";
@@ -53,13 +54,27 @@ export default function Provider({ children }: { children: React.ReactNode }) {
               <div className="relative hidden h-screen flex-col bg-[#050507] text-slate-200 md:flex selection:bg-blue-500/30">
                 <div className="absolute inset-0 z-0 bg-[radial-gradient(circle_at_50%_-20%,#1e293b,transparent)] opacity-40 pointer-events-none" />
 
+                {React.useMemo(() => (
+                  <div className="absolute inset-0 z-0 h-full w-full pointer-events-none">
+                    <SparklesCore
+                      id="globalparticles"
+                      background="transparent"
+                      minSize={0.6}
+                      maxSize={1.4}
+                      particleDensity={80}
+                      className="h-full w-full"
+                      particleColor="#FFFFFF"
+                    />
+                  </div>
+                ), [])}
+
                 <Toaster position="top-center" reverseOrder={false} />
                 {accountBilling.is && <AccountBilling />}
 
                 <MainNavBar />
 
                 <div className="flex flex-1 overflow-hidden relative z-10">
-                  {!pathname.startsWith("/tokens") && <MainSidebar />}
+                  {!pathname.startsWith("/tokens") && !pathname.startsWith("/signin") && <MainSidebar />}
                   <main className="flex-1 overflow-auto bg-transparent relative">
                     {children}
                   </main>

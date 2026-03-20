@@ -16,7 +16,7 @@ export default function EditorSandpack() {
   React.useEffect(() => {
     const Handle = async () => {
       if (!sandBox.sandBoxType) return;
-      
+
       setsandBox(prev => ({ ...prev, loading: true }));
       try {
         const client = previewRef.current?.getClient();
@@ -32,7 +32,7 @@ export default function EditorSandpack() {
       }
     };
     Handle();
-  }, [sandBox, sandpack, router]);
+  }, [sandBox, sandpack, router, setsandBox]);
 
   return (
     <SandpackPreview

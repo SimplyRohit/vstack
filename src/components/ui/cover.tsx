@@ -3,7 +3,6 @@ import React, { useEffect, useId, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useRef } from "react";
 import { cn } from "@/lib/utils";
-import { SparklesCore } from "@/components/ui/sparkles";
 
 export const Cover = ({
   children,
@@ -66,22 +65,6 @@ export const Cover = ({
               }}
               className="flex h-full w-[200%]"
             >
-              <SparklesCore
-                background="transparent"
-                minSize={0.4}
-                maxSize={1}
-                particleDensity={500}
-                className="h-full w-full"
-                particleColor="#FFFFFF"
-              />
-              <SparklesCore
-                background="transparent"
-                minSize={0.4}
-                maxSize={1}
-                particleDensity={500}
-                className="h-full w-full"
-                particleColor="#FFFFFF"
-              />
             </motion.div>
           </motion.div>
         )}

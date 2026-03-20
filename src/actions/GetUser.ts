@@ -1,11 +1,11 @@
 "use server";
 import { eq } from "drizzle-orm";
 import { db } from "@/service/Database/index";
-import { Users } from "@/service/Database/schema";
+import { user as userTable } from "@/service/Database/schema";
 import { auth } from "@/service/Auth/auth";
 import { User } from "@/lib/Types";
+import { headers } from "next/headers";
 
-///////////////////////////////////////////////////////////////////////////
 export async function GetUser(User: User) {
   try {
     if (!User) {
@@ -13,14 +13,15 @@ export async function GetUser(User: User) {
     }
     const exitinguser = await db
       .select()
-      .from(Users)
-      .where(eq(Users.userid, User.id as string));
+      .from(userTable)
+      .where(eq(userTable.id, User.id as string));
     if (exitinguser.length === 0) {
-      await db.insert(Users).values({
+      await db.insert(userTable).values({
+        id: User.id as string,
         email: User.email as string,
-        userid: User.id as string,
         name: User.name,
         image: User.image,
+        emailVerified: true,
       });
       return 201;
     }
@@ -34,17 +35,17 @@ export async function GetUser(User: User) {
 ///////////////////////////////////////////////////////////////////////////
 
 export async function GetTokens() {
-  const currentUser = await auth();
-  const user = currentUser?.user;
+  const session = await auth.api.getSession({ headers: await headers() });
+  const user = session?.user;
   try {
     if (!user) {
       return { status: 400 };
     }
 
     const exitingtokens = await db
-      .select({ tokens: Users.tokens })
-      .from(Users)
-      .where(eq(Users.userid, currentUser?.user?.id as string));
+      .select({ tokens: userTable.tokens })
+      .from(userTable)
+      .where(eq(userTable.id, user.id as string));
 
     return { tokens: exitingtokens[0].tokens, status: 200 };
   } catch (error) {
@@ -53,8 +54,8 @@ export async function GetTokens() {
 }
 
 export async function GetUserId() {
-  const currentUser = await auth();
-  const user = currentUser?.user;
+  const session = await auth.api.getSession({ headers: await headers() });
+  const user = session?.user;
   if (!user?.id) {
     return { status: 400, userId: null };
   }

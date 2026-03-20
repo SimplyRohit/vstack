@@ -4,7 +4,6 @@ import NavbarAvatar from "./NavbarAvatar";
 import { usePathname } from "next/navigation";
 import { SandBoxContext } from "@/lib/Context";
 import { Rocket, Share2, Loader } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 export default function MainNavBar() {
   const pathname = usePathname();
@@ -21,16 +20,16 @@ export default function MainNavBar() {
   };
 
   return (
-    <nav className="sticky top-0 z-50 flex h-16 w-full items-center justify-between border-b border-white/5 bg-black/20 px-6 backdrop-blur-xl transition-all duration-300 hover:bg-black/40">
+    <nav className="sticky top-0 z-50 flex h-14 w-full items-center justify-between bg-transparent px-4 transition-all duration-300">
       <div className="flex items-center gap-2">
         <h1
           className="group flex cursor-pointer items-baseline transition-all"
           onClick={() => (window.location.href = "/")}
         >
-          <span className="ml-8 font-syne text-4xl">V</span>
+          <span className="ml-8 font-syne text-3xl">V</span>
           <span className="text-2xl">stack</span>
           <div className="ml-4 h-4 w-px bg-white/10" />
-          <span className="ml-4 hidden text-2xl font-bold md:block">
+          <span className="ml-4 hidden text-base font-bold md:block">
             Cloud IDE
           </span>
         </h1>

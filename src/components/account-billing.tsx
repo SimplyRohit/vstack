@@ -1,6 +1,5 @@
 import { Loader, Trash, X } from "lucide-react";
-import { Separator } from "./ui/separator";
-import { useSession } from "next-auth/react";
+import { authClient } from "@/lib/auth-client";
 import { Button } from "./ui/button";
 import React from "react";
 import { AccountBillingContext } from "@/lib/Context";
@@ -9,7 +8,7 @@ export default function AccountBilling() {
   const { accountBilling, setaccountBilling } = React.useContext(
     AccountBillingContext,
   );
-  const user = useSession().data?.user;
+  const user = authClient.useSession().data?.user;
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md transition-all duration-300">
       <div className="w-full max-w-[480px] rounded-[2.5rem] border border-white/10 bg-[#0d0d12]/90 p-8 shadow-[0_20px_50px_rgba(0,0,0,0.6)] backdrop-blur-2xl">

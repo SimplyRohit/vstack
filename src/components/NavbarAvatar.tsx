@@ -9,31 +9,25 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import { signIn, signOut, useSession } from "next-auth/react";
-import { AccountBillingContext, SandBoxContext } from "@/lib/Context";
+import { authClient } from "@/lib/auth-client";
+import { AccountBillingContext } from "@/lib/Context";
 import React from "react";
-import { usePathname } from "next/navigation";
 
 import UserTokens from "./UserTokens";
 
+import { usePathname } from "next/navigation";
+
 export default function NavbarAvatar() {
-  const { setaccountBilling } = React.useContext(AccountBillingContext);
-  const { setsandBox } = React.useContext(SandBoxContext);
   const pathname = usePathname();
-  const session = useSession();
+  const { setaccountBilling } = React.useContext(AccountBillingContext);
+  const session = authClient.useSession();
   const user = session.data?.user;
-  const status = session.status;
+  const isPending = session.isPending;
+  const isSignInPage = pathname === "/signin";
 
-  const handleSandbox = (sandBox: string) => {
-    setsandBox({
-      sandBoxType: sandBox,
-      timeStamp: Date.now(),
-    });
-  };
-
-  if (status === "loading") {
+  if (isPending) {
     return (
-      <div className="flex items-center justify-end gap-6 px-4 py-2">
+      <div className="flex items-center justify-end gap-6 px-2 py-1">
         <div className="h-9 w-9 flex items-center justify-center rounded-full bg-white/5 border border-white/10 animate-pulse">
           <Loader2 className="h-4 w-4 animate-spin text-slate-500" />
         </div>
@@ -42,18 +36,20 @@ export default function NavbarAvatar() {
   }
 
   return (
-    <div className="flex items-center justify-end gap-6 px-4 py-2">
+    <div className="flex items-center justify-end gap-3 px-2 py-1">
       <UserTokens />
 
       {!user ? (
-        <Button
-          onClick={() => signIn()}
-          size="sm"
-          variant="secondary"
-          className="rounded-full bg-blue-600 px-6 font-semibold text-white transition-all hover:bg-blue-700 hover:shadow-[0_0_15px_rgba(37,99,235,0.4)]"
-        >
-          Sign In
-        </Button>
+        !isSignInPage && (
+          <Button
+            onClick={() => authClient.signIn.social({ provider: "google" })}
+            size="sm"
+            variant="secondary"
+            className="h-8 rounded-full bg-blue-600 px-4 text-xs font-semibold text-white transition-all hover:bg-blue-700 hover:shadow-[0_0_15px_rgba(37,99,235,0.4)]"
+          >
+            Sign In
+          </Button>
+        )
       ) : (
         <div className="flex items-center gap-3">
           <DropdownMenu>
@@ -129,7 +125,7 @@ export default function NavbarAvatar() {
               <div className="p-1">
                 <DropdownMenuItem
                   className="flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2 text-xs font-medium text-red-400 transition-colors hover:bg-red-500/10 hover:text-red-300"
-                  onClick={() => signOut()}
+                  onClick={() => authClient.signOut()}
                 >
                   <LogOut className="h-4 w-4" />
                   <span>Log out session</span>

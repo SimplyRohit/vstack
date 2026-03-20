@@ -1,14 +1,14 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { GetTokens } from "@/actions/GetUser";
-import { Sparkles, Coins } from "lucide-react";
-import { useSession } from "next-auth/react";
-import { motion, AnimatePresence } from "framer-motion";
-import { cn } from "@/lib/utils";
+import { Coins } from "lucide-react";
+import { authClient } from "@/lib/auth-client";
+import { motion } from "framer-motion";
+
 
 export default function UserTokens() {
   const [tokens, setTokens] = useState<number | null>(null);
-  const session = useSession();
+  const session = authClient.useSession();
   const user = session.data?.user;
 
   useEffect(() => {

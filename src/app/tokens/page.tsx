@@ -4,13 +4,13 @@ import Bottom from "@/components/Bottom";
 import { allBuy } from "@/lib/Constant";
 import { PayPalButtons } from "@paypal/react-paypal-js";
 import { Loader } from "lucide-react";
-import { signIn, useSession } from "next-auth/react";
+import { authClient } from "@/lib/auth-client";
 import toast from "react-hot-toast";
 
 export default function Pricing() {
   const notify = () => toast("payment failed");
-  const Session = useSession();
-  const user = Session.data?.user;
+  const session = authClient.useSession();
+  const user = session.data?.user;
 
   // on payment success update tokens
   const onPaymentSuccess = async ({
@@ -25,7 +25,8 @@ export default function Pricing() {
     tokens: number;
   }) => {
     if (!user) {
-      return signIn();
+      window.location.href = "/signin";
+      return;
     }
     await updateTokens({
       tokens,
@@ -35,9 +36,9 @@ export default function Pricing() {
     });
   };
 
-  return Session.status === "loading" ? (
+  return session.isPending ? (
     <div className="flex min-h-[calc(100vh-95px)] w-full items-center justify-center">
-      <Loader className="animate-spin" />
+      <Loader className="animate-spin text-blue-500 opacity-50" />
     </div>
   ) : (
     <div className="flex min-h-[calc(100vh-95px)] w-full items-center justify-center">

@@ -1,8 +1,7 @@
 "use client";
-import { useSession } from "next-auth/react";
+import { authClient } from "@/lib/auth-client";
 import React from "react";
 import { UserMessageContext } from "@/lib/Context";
-import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Textarea } from "@/components/ui/textarea";
 import { Forward, Sparkles } from "lucide-react";
@@ -11,19 +10,18 @@ import { Suggestions } from "@/lib/Constant";
 import { Cover } from "@/components/ui/cover";
 import Stacks from "@/components/stacks";
 import toast from "react-hot-toast";
-import { SparklesCore } from "@/components/ui/sparkles";
 import { motion } from "framer-motion";
 
 export default function Home() {
   const { SetUserMessage } = React.useContext(UserMessageContext);
   const router = useRouter();
-  const session = useSession();
+  const session = authClient.useSession();
   const [text, setText] = React.useState<string>("");
   const user = session.data?.user;
 
   const handleSubmit = async () => {
     if (!user) {
-      signIn();
+      router.push("/signin");
       return;
     }
     const chatid = Math.random().toString(36).slice(2);
@@ -33,7 +31,7 @@ export default function Home() {
 
   const handleGenerate = async (suggestion: string) => {
     if (!user) {
-      signIn();
+      router.push("/signin");
       return;
     }
     const chatid = Math.random().toString(36).slice(2);
@@ -43,7 +41,7 @@ export default function Home() {
 
   const handleStacks = async (template: string) => {
     if (!user) {
-      signIn();
+      router.push("/signin");
       return;
     }
     toast("coming soon");
@@ -52,17 +50,6 @@ export default function Home() {
 
   return (
     <div className="relative flex h-full w-full flex-grow flex-col items-center justify-center overflow-hidden px-4">
-      <div className="absolute inset-0 z-0 h-full w-full">
-        <SparklesCore
-          id="tsparticlesfullpage"
-          background="transparent"
-          minSize={0.6}
-          maxSize={1.4}
-          particleDensity={100}
-          className="h-full w-full"
-          particleColor="#FFFFFF"
-        />
-      </div>
 
       <div className="relative z-10 flex flex-col items-center justify-center">
         <motion.div
@@ -94,6 +81,7 @@ export default function Home() {
           <div className="relative h-[160px] w-full px-2 pt-2">
             <Textarea
               inputMode="text"
+              value={text}
               onChange={(e) => setText(e.target.value)}
               placeholder="What do you want to build today?"
               className="h-full w-full resize-none border-none bg-transparent text-lg font-medium leading-relaxed placeholder:text-slate-500 focus-visible:ring-0"

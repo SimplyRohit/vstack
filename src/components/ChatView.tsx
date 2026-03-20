@@ -1,11 +1,11 @@
 import { useRef, useEffect } from "react";
-import { Forward, Sparkles, Wand2 } from "lucide-react";
+import { Forward } from "lucide-react";
 import { Textarea } from "./ui/textarea";
 import { cn } from "@/lib/utils";
 import { Message } from "@/lib/Types";
 import ReactMarkdown from "react-markdown";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { useSession } from "next-auth/react";
+import { authClient } from "@/lib/auth-client";
 import TypingAnimation from "@/components/ui/typing-animation";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -24,7 +24,7 @@ export default function ChatView({
   text: string;
   setText: React.Dispatch<React.SetStateAction<string>>;
 }) {
-  const user = useSession().data?.user;
+  const user = authClient.useSession().data?.user;
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -104,12 +104,12 @@ export default function ChatView({
                     ) : (
                       <ReactMarkdown
                         components={{
-                          pre: ({ node, ...props }) => (
+                          pre: ({ ...props }) => (
                             <div className="overflow-x-auto w-full my-2 rounded-lg bg-black/30 p-2 scrollbar-thin scrollbar-thumb-white/10">
                               <pre {...props} className="!bg-transparent !p-0" />
                             </div>
                           ),
-                          code: ({ node, ...props }) => (
+                          code: ({ ...props }) => (
                             <code {...props} className="!bg-white/5 !px-1 !rounded text-blue-300" />
                           )
                         }}

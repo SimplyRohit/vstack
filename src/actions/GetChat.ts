@@ -1,9 +1,10 @@
 "use server";
 import { and, eq, sql } from "drizzle-orm";
 import { db } from "@/service/Database/index";
-import { Chats, Users } from "@/service/Database/schema";
+import { Chats, user as userTable } from "@/service/Database/schema";
 import { auth } from "@/service/Auth/auth";
-import { FileStructure } from "@/lib/Types";
+import { FileStructure, Message } from "@/lib/Types";
+import { headers } from "next/headers";
 
 export async function GetChat({
   chatid,
@@ -14,8 +15,8 @@ export async function GetChat({
   UserMessage: string;
   template: string;
 }) {
-  const currentUser = await auth();
-  const user = currentUser?.user;
+  const session = await auth.api.getSession({ headers: await headers() });
+  const user = session?.user;
   try {
     if (!user) {
       return { status: 400, error: "User not authenticated" };
@@ -81,30 +82,36 @@ export async function GetChat({
 
 export async function UpdateChat(
   chatid: string,
-  message: [],
+  message: Message[],
   file: FileStructure,
+  isManual = false,
 ) {
-  const currentUser = await auth();
-  const user = currentUser?.user;
+  const session = await auth.api.getSession({ headers: await headers() });
+  const user = session?.user;
   if (!user) {
     return { status: 400, error: "User not authenticated" };
   }
   try {
-    await db.transaction(async (tx) => {
+    return await db.transaction(async (tx) => {
       await tx
         .update(Chats)
         .set({ messages: message, files: file })
         .where(
           and(eq(Chats.userid, user.id as string), eq(Chats.chatid, chatid)),
         );
-      await tx
-        .update(Users)
-        .set({ tokens: sql`${Users.tokens} - 1` })
-        .where(eq(Users.userid, user.id as string));
+
+      if (!isManual) {
+        await tx
+          .update(userTable)
+          .set({ tokens: sql`${userTable.tokens} - 1` })
+          .where(eq(userTable.id, user.id as string));
+      }
 
       return {
         status: 200,
-        message: "Chat updated and tokens subtracted successfully",
+        message: isManual
+          ? "Changes saved successfully"
+          : "Chat updated and tokens subtracted successfully",
       };
     });
   } catch (error) {
@@ -114,8 +121,8 @@ export async function UpdateChat(
 }
 
 export async function getAllChats() {
-  const currentUser = await auth();
-  const user = currentUser?.user;
+  const session = await auth.api.getSession({ headers: await headers() });
+  const user = session?.user;
   if (!user) {
     return 400;
   }
@@ -136,8 +143,8 @@ export async function getAllChats() {
 }
 
 export async function DeleteChat(chatid: string) {
-  const currentUser = await auth();
-  const user = currentUser?.user;
+  const session = await auth.api.getSession({ headers: await headers() });
+  const user = session?.user;
   if (!user) {
     return 400;
   }

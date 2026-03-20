@@ -1,16 +1,23 @@
-import { NextResponse } from "next/server";
-import { auth } from "./service/Auth/auth";
-export default auth(async function middleware(req) {
-  const { nextUrl } = req;
-  const isAuthenticated = !!req.auth;
-  const ProtectedRoute =
-    nextUrl.pathname.startsWith("/chat") ||
-    nextUrl.pathname.startsWith("/verify");
-  if (!isAuthenticated && ProtectedRoute) {
-    return NextResponse.redirect(new URL("/api/auth/signin", nextUrl));
+import { NextResponse, type NextRequest } from "next/server";
+
+export default async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  const isProtectedRoute = pathname.startsWith("/chat") ||
+    pathname.startsWith("/tokens") ||
+    pathname.startsWith("/verify");
+
+  if (isProtectedRoute) {
+    const sessionToken = request.cookies.get("better-auth.session_token") ||
+      request.cookies.get("__Secure-better-auth.session_token");
+
+    if (!sessionToken) {
+      return NextResponse.redirect(new URL("/signin", request.url));
+    }
   }
+
   return NextResponse.next();
-});
+}
 
 export const config = {
   matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],

@@ -1,5 +1,4 @@
 import "./globals.css";
-import { SessionProvider } from "next-auth/react";
 import React from "react";
 import Provider from "@/components/provider";
 import { Metadata } from "next";
@@ -19,9 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className={cn(GeistMono.className, "antialiased bg-[#141414] text-white")}>
-        <SessionProvider>
           <Provider>{children}</Provider>
-        </SessionProvider>
       </body>
     </html>
   );
