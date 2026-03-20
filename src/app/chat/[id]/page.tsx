@@ -14,8 +14,7 @@ import { GetChat, UpdateChat } from "@/actions/GetChat";
 import { Loader } from "lucide-react";
 import { GetTokens } from "@/actions/GetUser";
 import toast from "react-hot-toast";
-import { codeSession } from "@/service/Ai";
-import { GetAiMessage } from "@/actions/GetAi";
+import { GetAiMessage, GetAiCode } from "@/actions/GetAi";
 
 export default function Workspace() {
   const { UserMessage } = React.useContext(UserMessageContext);
@@ -78,17 +77,21 @@ export default function Workspace() {
 
         //doing this bcz of vercel function time out error
         try {
-          const data2 = await codeSession.sendMessage(message);
-          const newdata = data2.response.text();
-          const parsedfile = JSON.parse(newdata);
-          const files = parsedfile.files as FileStructure;
-          const merge = {
-            ...React_Default_File,
-            ...files,
-          };
-          setFiles(merge);
-          setCodeLoading(false);
-          HandleUpdateChat(chatid, newMessage as [], files);
+          const data2 = await GetAiCode(message);
+          if (data2.status === 200) {
+            const newdata = data2.content;
+            const parsedfile = JSON.parse(newdata);
+            const files = parsedfile.files as FileStructure;
+            const merge = {
+              ...React_Default_File,
+              ...files,
+            };
+            setFiles(merge);
+            setCodeLoading(false);
+            HandleUpdateChat(chatid, newMessage as [], files);
+          } else {
+            setCodeLoading(false);
+          }
         } catch (error) {
           console.log(error);
           return setCodeLoading(false);
