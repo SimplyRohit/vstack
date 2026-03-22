@@ -40,11 +40,14 @@ export default function Home() {
   };
 
   const handleStacks = async (template: string) => {
-    if (!user) {
-      router.push("/signin");
-      return;
-    }
-    toast("coming soon");
+    toast("Coming Soon!", {
+      icon: '🚀',
+      style: {
+        borderRadius: '10px',
+        background: '#333',
+        color: '#fff',
+      },
+    });
     console.log(template);
   };
 

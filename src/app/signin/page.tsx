@@ -4,8 +4,7 @@ import { authClient } from "@/lib/auth-client";
 import { Github, Chrome, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-
-
+import toast from "react-hot-toast";
 
 export default function SignIn() {
   const [loading, setLoading] = React.useState<string | null>(null);
@@ -19,6 +18,7 @@ export default function SignIn() {
       });
     } catch (error) {
       console.error(error);
+      toast.error("Sign in failed. Please check your credentials and try again.");
     } finally {
       setLoading(null);
     }

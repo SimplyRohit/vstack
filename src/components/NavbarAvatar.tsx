@@ -15,10 +15,11 @@ import React from "react";
 
 import UserTokens from "./UserTokens";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 export default function NavbarAvatar() {
   const pathname = usePathname();
+  const router = useRouter();
   const { setaccountBilling } = React.useContext(AccountBillingContext);
   const session = authClient.useSession();
   const user = session.data?.user;
@@ -42,7 +43,7 @@ export default function NavbarAvatar() {
       {!user ? (
         !isSignInPage && (
           <Button
-            onClick={() => authClient.signIn.social({ provider: "google" })}
+            onClick={() => router.push("/signin")}
             size="sm"
             variant="secondary"
             className="h-8 rounded-full bg-blue-600 px-4 text-xs font-semibold text-white transition-all hover:bg-blue-700 hover:shadow-[0_0_15px_rgba(37,99,235,0.4)]"
