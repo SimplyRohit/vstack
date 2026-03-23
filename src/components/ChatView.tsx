@@ -28,17 +28,24 @@ export default function ChatView({
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTo({
-        top: chatContainerRef.current.scrollHeight,
+    const container = chatContainerRef.current;
+    if (!container) return;
+
+    const observer = new MutationObserver(() => {
+      container.scrollTo({
+        top: container.scrollHeight,
         behavior: "smooth",
       });
-    }
-  }, [Message]);
+    });
+
+    observer.observe(container, { childList: true, subtree: true, characterData: true });
+    container.scrollTo({ top: container.scrollHeight, behavior: "smooth" });
+
+    return () => observer.disconnect();
+  }, [Message.length]);
 
   return (
     <div className="relative flex h-full w-[450px] flex-col overflow-hidden rounded-[2.5rem] border border-white/10 bg-black/40 shadow-2xl backdrop-blur-3xl">
-      {/* Header */}
       <div className="flex h-16 items-center justify-between border-b border-white/5 bg-white/5 px-6 backdrop-blur-md">
         <div className="flex items-center gap-3">
           <div className="h-2 w-2 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.6)] animate-pulse" />

@@ -5,13 +5,15 @@ import { FileStructure, Message } from "@/lib/Types";
 import { useParams } from "next/navigation";
 import React from "react";
 import {
+  React_Chat_Prompt,
   React_Code_Prompt,
   React_Default_File,
 } from "@/lib/Constant";
 import { TemplateContext, UserMessageContext } from "@/lib/Context";
-import { GetChat } from "@/actions/GetChat";
+import { GetChat, UpdateChat } from "@/actions/GetChat";
 import { Loader } from "lucide-react";
 import toast from "react-hot-toast";
+import { GetAiMessage } from "@/actions/GetAi";
 
 export default function Workspace() {
   const { UserMessage } = React.useContext(UserMessageContext);
@@ -52,16 +54,27 @@ export default function Workspace() {
     setIsGenerating(true);
     setCodeLoading(true);
     const lastUserMessage = Message[Message.length - 1].content;
-    const prompt = lastUserMessage + "" + React_Code_Prompt;
 
     try {
+      const fastReply = await GetAiMessage(lastUserMessage + "\n\n" + React_Chat_Prompt);
+      const aiMessage = {
+        role: "assistant",
+        content: fastReply.status === 200 ? fastReply.content : "Understood! Generating code...",
+      };
+
+      const updatedMessages = [...Message, aiMessage];
+      setMessage(updatedMessages);
+
+      const codeContext = `\n\nCURRENT CODEBASE FILES:\n${JSON.stringify(files)}\n\nIMPORTANT: Use the above codebase as your starting point. Apply the user's requested changes, keep the rest of the code intact, and DO NOT wipe out existing features!`;
+      const prompt = lastUserMessage + codeContext + "\n\n" + React_Code_Prompt;
+
       const response = await fetch("/api/chat/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           userPrompt: prompt,
           chatid,
-          previousMessages: Message
+          previousMessages: updatedMessages
         }),
       });
 
@@ -92,28 +105,21 @@ export default function Workspace() {
 
       // Parse JSON explicitly once the stream ends
       try {
-        // Find JSON block if AI nested it inside markdown
         let jsonStr = fullText;
         if (fullText.includes("```json")) {
           jsonStr = fullText.split("```json")[1].split("```")[0];
         }
 
         const result = JSON.parse(jsonStr);
-        const aiContent = result.explanation || "Project generated successfully!";
-        const files = result.files || {};
-
-        const aiMessage = {
-          role: "assistant",
-          content: aiContent,
-        };
-
-        setMessage((prev) => [...prev, aiMessage]);
+        const generatedFiles = result.files || {};
 
         const merge = {
           ...React_Default_File,
-          ...files,
+          ...generatedFiles,
         };
         setFiles(merge);
+
+        await UpdateChat(chatid, updatedMessages as [], generatedFiles);
       } catch (jsonErr) {
         console.error("AI SDK Parse Error:", jsonErr);
         toast.error("AI failed to output valid code format.");
