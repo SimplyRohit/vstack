@@ -1,6 +1,5 @@
 import { auth } from "@/service/Auth/auth";
 import { GetTokens } from "@/actions/GetUser";
-import { UpdateChat } from "@/actions/GetChat";
 import { headers } from "next/headers";
 import { streamText } from "ai";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
@@ -16,12 +15,13 @@ export async function POST(req: Request) {
             return new Response("Unauthorized", { status: 401 });
         }
 
-        const { userPrompt, chatid, previousMessages } = await req.json();
+        const { userPrompt, previousMessages } = await req.json();
 
         const tokenStatus = await GetTokens();
         if (tokenStatus.status !== 200 || !tokenStatus.tokens || tokenStatus.tokens <= 0) {
             return new Response("Insufficient tokens", { status: 402 });
         }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const formattedMessages = previousMessages.map((m: any) => ({
             role: m.role as "user" | "assistant",
             content: m.content

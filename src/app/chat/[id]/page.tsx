@@ -131,7 +131,7 @@ export default function Workspace() {
       setCodeLoading(false);
       setIsGenerating(false);
     }
-  }, [Message, chatid, notify, isGenerating]);
+  }, [Message, chatid, notify, isGenerating, files]);
 
   React.useEffect(() => {
     if (Message.length > 0 && Message[Message.length - 1].role === "user" && !isGenerating) {
