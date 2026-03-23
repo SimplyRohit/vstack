@@ -5,16 +5,13 @@ import { FileStructure, Message } from "@/lib/Types";
 import { useParams } from "next/navigation";
 import React from "react";
 import {
-  React_Chat_Prompt,
   React_Code_Prompt,
   React_Default_File,
 } from "@/lib/Constant";
 import { TemplateContext, UserMessageContext } from "@/lib/Context";
-import { GetChat, UpdateChat } from "@/actions/GetChat";
+import { GetChat } from "@/actions/GetChat";
 import { Loader } from "lucide-react";
-import { GetTokens } from "@/actions/GetUser";
 import toast from "react-hot-toast";
-import { GetAiMessage, GetAiCode } from "@/actions/GetAi";
 
 export default function Workspace() {
   const { UserMessage } = React.useContext(UserMessageContext);
@@ -46,64 +43,96 @@ export default function Workspace() {
     CheckChat();
   }, [CheckChat]);
 
-  const HandleUpdateChat = async (
-    chatid: string,
-    newMessage: Message[],
-    files: FileStructure,
-  ) => {
-    await UpdateChat(chatid, newMessage as [], files as FileStructure);
-  };
+
+  const [isGenerating, setIsGenerating] = React.useState<boolean>(false);
+
   const HandleMessage = React.useCallback(async () => {
+    if (Message.length === 0 || isGenerating) return;
+
+    setIsGenerating(true);
     setCodeLoading(true);
-    const status = await GetTokens();
-    if (status.status === 200) {
-      if (status.tokens! <= 0 || status.tokens === undefined) {
-        notify();
+    const lastUserMessage = Message[Message.length - 1].content;
+    const prompt = lastUserMessage + "" + React_Code_Prompt;
+
+    try {
+      const response = await fetch("/api/chat/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userPrompt: prompt,
+          chatid,
+          previousMessages: Message
+        }),
+      });
+
+      if (!response.ok) {
+        if (response.status === 402) {
+          notify();
+        } else {
+          toast.error("Failed to start AI generation. Status: " + response.status);
+        }
         setCodeLoading(false);
+        setIsGenerating(false);
         return;
       }
-      const userChat = Message[Message.length - 1].content;
-      const data1 = await GetAiMessage(userChat + React_Chat_Prompt);
-      const aiMessage = {
-        role: "assistant",
-        content: data1.content,
-      };
-      const newMessage = [...Message, aiMessage];
-      if (data1.status === 200) {
-        setMessage((prev) => [...prev, aiMessage]);
-        const message = userChat + "" + React_Code_Prompt;
 
-        try {
-          const data2 = await GetAiCode(message);
-          if (data2.status === 200) {
-            const newdata = data2.content;
-            const parsedfile = JSON.parse(newdata);
-            const files = parsedfile.files as FileStructure;
-            const merge = {
-              ...React_Default_File,
-              ...files,
-            };
-            setFiles(merge);
-            setCodeLoading(false);
-            HandleUpdateChat(chatid, newMessage as [], files);
-          } else {
-            setCodeLoading(false);
-          }
-        } catch (error) {
-          console.log(error);
-          return setCodeLoading(false);
-        }
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
+      let fullText = "";
+
+      if (!reader) throw new Error("No reader available");
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        const chunk = decoder.decode(value, { stream: true });
+        fullText += chunk;
       }
+
+      // Parse JSON explicitly once the stream ends
+      try {
+        // Find JSON block if AI nested it inside markdown
+        let jsonStr = fullText;
+        if (fullText.includes("```json")) {
+          jsonStr = fullText.split("```json")[1].split("```")[0];
+        }
+
+        const result = JSON.parse(jsonStr);
+        const aiContent = result.explanation || "Project generated successfully!";
+        const files = result.files || {};
+
+        const aiMessage = {
+          role: "assistant",
+          content: aiContent,
+        };
+
+        setMessage((prev) => [...prev, aiMessage]);
+
+        const merge = {
+          ...React_Default_File,
+          ...files,
+        };
+        setFiles(merge);
+      } catch (jsonErr) {
+        console.error("AI SDK Parse Error:", jsonErr);
+        toast.error("AI failed to output valid code format.");
+      }
+    } catch (error) {
+      console.error("Vercel AI SDK Error:", error);
+      toast.error("Network error during stream.");
+    } finally {
       setCodeLoading(false);
+      setIsGenerating(false);
     }
-  }, [Message, chatid]);
+  }, [Message, chatid, notify, isGenerating]);
 
   React.useEffect(() => {
-    if (Message.length > 0 && Message[Message.length - 1].role === "user") {
+    if (Message.length > 0 && Message[Message.length - 1].role === "user" && !isGenerating) {
       HandleMessage();
       setAnimation(true);
     }
-  }, [Message, HandleMessage]);
+  }, [Message, HandleMessage, isGenerating]);
 
   const HandleUpdate = async () => {
     setMessage((prev) => [...prev, { role: "user", content: text }]);
