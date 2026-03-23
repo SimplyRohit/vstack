@@ -29,6 +29,7 @@
     "@tsparticles/engine": "^3.7.1",
     "@tsparticles/react": "^3.0.0",
     "@tsparticles/slim": "^3.7.1",
+    "ai": "^6.0.135",
     "axios": "^1.7.9",
     "better-auth": "^1.5.5",
     "class-variance-authority": "^0.7.1",
